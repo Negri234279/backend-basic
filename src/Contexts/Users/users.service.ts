@@ -1,21 +1,19 @@
 import {
+    ConflictException,
     Injectable,
     NotFoundException,
     UnauthorizedException,
-    ConflictException,
 } from '@nestjs/common'
-import { JwtService } from '@nestjs/jwt'
-
-import { UsersRepository } from './users.repository'
 import * as bcrypt from 'bcrypt'
+import { UserPayload } from 'src/Core/infrastructure/@types/userPayload'
+
 import { LoginDto, RegisterDto } from './dtos'
+import { IUser } from './user'
+import { UsersRepository } from './users.repository'
 
 @Injectable()
 export class UsersService {
-    constructor(
-        private readonly usersRepository: UsersRepository,
-        private readonly jwtService: JwtService,
-    ) {}
+    constructor(private readonly usersRepository: UsersRepository) {}
 
     async register(registerDto: RegisterDto): Promise<void> {
         const { id, username, email, password } = registerDto
@@ -51,29 +49,28 @@ export class UsersService {
         return
     }
 
-    async login(loginDto: LoginDto): Promise<{ access_token: string }> {
+    async login(loginDto: LoginDto): Promise<UserPayload> {
         const { email, password } = loginDto
+
         const user = await this.usersRepository.findOneByEmail(email)
+        if (!user) {
+            throw new ConflictException()
+        }
 
         const isMatch = await bcrypt.compare(password, user.password)
         if (!isMatch) {
             throw new UnauthorizedException()
         }
 
-        const payload = {
+        return {
             id: user.id,
             email: user.email,
             username: user.username,
             role: user.role,
         }
-        const access_token = await this.jwtService.signAsync(payload, {
-            expiresIn: '7d',
-        })
-
-        return { access_token }
     }
 
-    async profile(id: string): Promise<any> {
+    async profile(id: string): Promise<IUser> {
         const user = await this.usersRepository.findOne(id)
         if (!user) {
             throw new NotFoundException()

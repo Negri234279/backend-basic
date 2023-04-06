@@ -5,3 +5,5 @@ export interface IUser {
     email: string
     role: string
 }
+
+export type IUserProfile = Omit<IUser, 'id' | 'password'>
