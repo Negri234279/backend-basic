@@ -21,6 +21,10 @@ module.exports = {
         quotes: ['error', 'single'],
         semi: ['error', 'never'],
         'linebreak-style': ['error', 'unix'],
+        '@typescript-eslint/no-unused-vars': [
+            'warn',
+            { argsIgnorePattern: '^_', varsIgnorePattern: '^_' },
+        ],
         '@typescript-eslint/interface-name-prefix': 'off',
         '@typescript-eslint/explicit-function-return-type': 'off',
         '@typescript-eslint/explicit-module-boundary-types': 'off',
