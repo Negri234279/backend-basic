@@ -9,7 +9,7 @@ import { EnvVar } from './config/configuration'
         JwtModule.registerAsync({
             useFactory: async (configService: ConfigService<EnvVar>) => ({
                 secret: configService.get<string>('JWT_TOKEN'),
-                signOptions: { expiresIn: '1h' },
+                signOptions: { expiresIn: '1h', algorithm: 'HS512' },
             }),
             inject: [ConfigService],
         }),
