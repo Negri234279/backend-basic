@@ -1,37 +1,36 @@
-import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common'
-import { JwtService } from '@nestjs/jwt'
+import {
+    Body,
+    Controller,
+    Get,
+    Patch,
+    Post,
+    Req,
+    UseGuards,
+} from '@nestjs/common'
 import { ReqPayload } from 'src/Core/infrastructure/@types/express'
+import { AccessToken } from 'src/Core/infrastructure/@types/userPayload'
 import { Public } from 'src/Core/infrastructure/decorators/public.decorator'
 
-import { RegisterDto } from './dtos'
+import { ChangePasswordDto, RegisterDto } from './dtos'
 import { LocalAuthGuard } from './guards/local-auth.guard'
 import { IUserProfile } from './user'
 import { UsersService } from './users.service'
 
-import type { Request } from 'express'
 @Controller('users')
 export class UsersController {
-    constructor(
-        private readonly usersService: UsersService,
-        private readonly jwtService: JwtService,
-    ) {}
+    constructor(private readonly usersService: UsersService) {}
 
     @Public()
     @Post('register')
     async register(@Body() body: RegisterDto): Promise<void> {
-        await this.usersService.register(body)
-        return
+        return await this.usersService.register(body)
     }
 
     @Public()
     @UseGuards(LocalAuthGuard)
     @Post('login')
-    async login(@Req() req: Request): Promise<{ access_token: string }> {
-        const access_token = await this.jwtService.signAsync(req.user, {
-            expiresIn: '7d',
-        })
-
-        return { access_token }
+    async login(@Req() req: ReqPayload): Promise<AccessToken> {
+        return await this.usersService.signToken(req.user)
     }
 
     @Get()
@@ -43,5 +42,27 @@ export class UsersController {
             email: user.email,
             role: user.role,
         }
+    }
+
+    @Patch('become-coach')
+    async becomeCoach(@Req() req: ReqPayload): Promise<AccessToken> {
+        const payload = await this.usersService.becomeCoach(req.user.id)
+
+        return await this.usersService.signToken(payload)
+    }
+
+    @Patch('become-athlete')
+    async becomeAthlete(@Req() req: ReqPayload): Promise<AccessToken> {
+        const payload = await this.usersService.becomeAthlete(req.user.id)
+
+        return await this.usersService.signToken(payload)
+    }
+
+    @Patch('change-password')
+    async changePassword(
+        @Req() req: ReqPayload,
+        @Body() body: ChangePasswordDto,
+    ): Promise<void> {
+        return await this.usersService.changePassword(req.user.id, body)
     }
 }
