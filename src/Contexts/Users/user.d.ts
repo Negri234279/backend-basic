@@ -3,7 +3,7 @@ export interface IUser {
     username: string
     password: string
     email: string
-    role: string
+    role: UserRole[]
 }
 
 export type IUserProfile = Omit<IUser, 'id' | 'password'>
