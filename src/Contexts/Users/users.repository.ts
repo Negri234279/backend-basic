@@ -1,69 +1,85 @@
 import { Injectable } from '@nestjs/common'
+import { InjectModel } from '@nestjs/mongoose'
+import { Model } from 'mongoose'
 
 import { IUser } from './user'
 import { IUserRepository } from './user.repository'
+import { UserEntity } from './user.schema'
 
 @Injectable()
 export class UsersRepository implements IUserRepository {
-    private readonly users: IUser[] = [
-        {
-            id: '001',
-            username: 'john',
-            password:
-                '$2b$10$ortK9gOTtIf0lTPV8z/Gge2uSuf1XL.63SlSeQ.srfCBfG2XLgzei',
-            email: 'john@gmail.com',
-            role: 'athlete',
-        },
-        {
-            id: '002',
-            username: 'maria',
-            password:
-                '$2b$10$ortK9gOTtIf0lTPV8z/Gge2uSuf1XL.63SlSeQ.srfCBfG2XLgzei',
-            email: 'maria@gmail.com',
-            role: 'athlete',
-        },
-    ]
+    constructor(
+        @InjectModel(UserEntity.name) private userModel: Model<UserEntity>,
+    ) {}
 
     async findOne(id: string): Promise<IUser | null> {
-        const user = this.users.find((user) => user.id === id)
+        const userEntity = await this.userModel.findById(id).lean().exec()
 
-        if (!user) {
+        if (!userEntity) {
             return null
         }
 
-        return user
+        return this.toDomain(userEntity)
     }
 
     async findOneByEmail(email: string): Promise<IUser | null> {
-        const user = this.users.find((user) => user.email === email)
+        const userEntity = await this.userModel.findOne({ email }).lean().exec()
 
-        if (!user) {
+        if (!userEntity) {
             return null
         }
 
-        return user
+        return this.toDomain(userEntity)
     }
 
     async findOneByUsername(username: string): Promise<IUser | null> {
-        const user = this.users.find((user) => user.username === username)
+        const userEntity = await this.userModel
+            .findOne({ username })
+            .lean()
+            .exec()
 
-        if (!user) {
+        if (!userEntity) {
             return null
         }
 
-        return user
+        return this.toDomain(userEntity)
     }
 
     async save(user: IUser): Promise<void> {
-        this.users.push(user)
-        return
+        const newUser = this.toPersistance(user)
+        const createdUser = new this.userModel(newUser)
+
+        await createdUser.save()
     }
 
-    async update(_user: IUser): Promise<void> {
-        throw new Error('Method not implemented.')
+    async update(user: IUser): Promise<void> {
+        const { _id, ...rest } = this.toPersistance(user)
+
+        await this.userModel.updateOne({ _id }, rest).exec()
     }
 
-    async delete(_id: string): Promise<void> {
-        throw new Error('Method not implemented.')
+    async delete(id: string): Promise<void> {
+        await this.userModel.deleteOne({ _id: id }).exec()
+    }
+
+    private toPersistance(user: IUser): UserEntity {
+        const userEntity = new UserEntity()
+        userEntity._id = user.id
+        userEntity.username = user.username
+        userEntity.password = user.password
+        userEntity.email = user.email
+        userEntity.role = user.role
+
+        return userEntity
+    }
+
+    private toDomain(userEntity: UserEntity): IUser {
+        return {
+            id: userEntity._id,
+            username: userEntity.username,
+            password: userEntity.password,
+            email: userEntity.email,
+            role: userEntity.role,
+        }
     }
 }

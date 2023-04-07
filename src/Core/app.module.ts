@@ -6,6 +6,7 @@ import { UsersModule } from '../Contexts/Users/users.module'
 import { AppController } from './infrastructure/app.controller'
 import configuration, { EnvVar } from './infrastructure/config/configuration'
 import { JwtAuthGuard } from './infrastructure/guards/jwtAuth.guard'
+import { MongoModule } from './infrastructure/mongo.module'
 
 @Module({
     imports: [
@@ -13,6 +14,7 @@ import { JwtAuthGuard } from './infrastructure/guards/jwtAuth.guard'
             isGlobal: true,
             load: [configuration],
         }),
+        MongoModule,
         UsersModule,
     ],
     providers: [
