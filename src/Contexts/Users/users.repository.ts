@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common'
-import { IUserRepository } from './user.repository'
+
 import { IUser } from './user'
+import { IUserRepository } from './user.repository'
 
 @Injectable()
 export class UsersRepository implements IUserRepository {
@@ -9,7 +10,7 @@ export class UsersRepository implements IUserRepository {
             id: '001',
             username: 'john',
             password:
-                '$2b$10$JM7nS.wSZzDcUyLbT.eaaOCMn/2D7NA3zFbgwkuL/hj69iT/0AC5i',
+                '$2b$10$ortK9gOTtIf0lTPV8z/Gge2uSuf1XL.63SlSeQ.srfCBfG2XLgzei',
             email: 'john@gmail.com',
             role: 'athlete',
         },
@@ -17,7 +18,7 @@ export class UsersRepository implements IUserRepository {
             id: '002',
             username: 'maria',
             password:
-                '$2b$10$JM7nS.wSZzDcUyLbT.eaaOCMn/2D7NA3zFbgwkuL/hj69iT/0AC5i',
+                '$2b$10$ortK9gOTtIf0lTPV8z/Gge2uSuf1XL.63SlSeQ.srfCBfG2XLgzei',
             email: 'maria@gmail.com',
             role: 'athlete',
         },

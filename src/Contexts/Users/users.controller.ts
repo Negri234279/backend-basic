@@ -1,17 +1,14 @@
 import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common'
 import { JwtService } from '@nestjs/jwt'
+import { ReqPayload } from 'src/Core/infrastructure/@types/express'
 import { Public } from 'src/Core/infrastructure/decorators/public.decorator'
-import { AuthGuard } from '@nestjs/passport'
 
-import { LoginDto, RegisterDto } from './dtos'
+import { RegisterDto } from './dtos'
+import { LocalAuthGuard } from './guards/local-auth.guard'
 import { IUserProfile } from './user'
 import { UsersService } from './users.service'
 
 import type { Request } from 'express'
-import { LocalAuthGuard } from './guards/local-auth.guard'
-import { UserPayload } from 'src/Core/infrastructure/@types/userPayload'
-import { ReqPayload } from 'src/Core/infrastructure/@types/express'
-
 @Controller('users')
 export class UsersController {
     constructor(
@@ -29,10 +26,7 @@ export class UsersController {
     @Public()
     @UseGuards(LocalAuthGuard)
     @Post('login')
-    async login(
-        @Req() req: Request,
-        @Body() _loginDto: LoginDto,
-    ): Promise<{ access_token: string }> {
+    async login(@Req() req: Request): Promise<{ access_token: string }> {
         const access_token = await this.jwtService.signAsync(req.user, {
             expiresIn: '7d',
         })
