@@ -1,16 +1,16 @@
 import { BadRequestException, Injectable } from '@nestjs/common'
 import { PassportStrategy } from '@nestjs/passport'
+import { plainToClass } from 'class-transformer'
+import { validate } from 'class-validator'
 import { Strategy } from 'passport-local'
 import { UserPayload } from 'src/Core/infrastructure/@types/userPayload'
 
-import { UsersService } from '../users.service'
-import { plainToClass } from 'class-transformer'
-import { validate } from 'class-validator'
 import { LoginDto } from '../dtos'
+import { UserLoginService } from '../services/login.service'
 
 @Injectable()
 export class LocalStrategy extends PassportStrategy(Strategy) {
-    constructor(private usersService: UsersService) {
+    constructor(private readonly userLoginService: UserLoginService) {
         super({ usernameField: 'email' })
     }
 
@@ -31,6 +31,6 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
             })
         }
 
-        return await this.usersService.login(credentials)
+        return await this.userLoginService.execute(credentials)
     }
 }
