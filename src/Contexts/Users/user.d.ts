@@ -12,3 +12,5 @@ export interface IUser {
 }
 
 export type IUserProfile = Omit<IUser, 'id' | 'password' | 'coach'>
+
+export type Coach = Pick<IUser, 'id' | 'name' | 'surname' | 'username'>

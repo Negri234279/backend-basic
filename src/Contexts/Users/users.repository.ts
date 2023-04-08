@@ -5,6 +5,7 @@ import { Model } from 'mongoose'
 import { IUser } from './user'
 import { IUserRepository } from './user.repository'
 import { UserEntity } from './user.schema'
+import { UserRole } from './userRole'
 
 @Injectable()
 export class UsersRepository implements IUserRepository {
@@ -40,6 +41,18 @@ export class UsersRepository implements IUserRepository {
         }
 
         return this.toDomain(userEntity)
+    }
+
+    async findCoaches(): Promise<IUser[] | null> {
+        const userEntity = await this.userModel
+            .find({ role: UserRole.COACH })
+            .lean()
+            .exec()
+        if (!userEntity) {
+            return []
+        }
+
+        return userEntity.map((user) => this.toDomain(user))
     }
 
     async save(user: IUser): Promise<void> {
