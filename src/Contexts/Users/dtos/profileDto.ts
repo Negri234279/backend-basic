@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger'
 
-import { IUserProfile } from '../user'
 import { UserRole } from '../userRole'
+import { IUserProfile } from '../user'
 
 export class ProfileDto implements IUserProfile {
     @ApiProperty()
@@ -12,4 +12,16 @@ export class ProfileDto implements IUserProfile {
 
     @ApiProperty({ enum: UserRole, default: [UserRole.ATHLETE], isArray: true })
     role: UserRole[]
+
+    @ApiProperty()
+    name: string
+
+    @ApiProperty()
+    surname: string
+
+    @ApiProperty()
+    createdAt: Date
+
+    @ApiProperty()
+    updatedAt: Date
 }
