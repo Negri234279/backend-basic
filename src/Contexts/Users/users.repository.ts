@@ -14,7 +14,6 @@ export class UsersRepository implements IUserRepository {
 
     async findOne(id: string): Promise<IUser | null> {
         const userEntity = await this.userModel.findById(id).lean().exec()
-
         if (!userEntity) {
             return null
         }
@@ -24,7 +23,6 @@ export class UsersRepository implements IUserRepository {
 
     async findOneByEmail(email: string): Promise<IUser | null> {
         const userEntity = await this.userModel.findOne({ email }).lean().exec()
-
         if (!userEntity) {
             return null
         }
@@ -37,7 +35,6 @@ export class UsersRepository implements IUserRepository {
             .findOne({ username })
             .lean()
             .exec()
-
         if (!userEntity) {
             return null
         }
@@ -53,7 +50,8 @@ export class UsersRepository implements IUserRepository {
     }
 
     async update(user: IUser): Promise<void> {
-        const { _id, ...rest } = this.toPersistance(user)
+        const updatedAt = new Date()
+        const { _id, ...rest } = this.toPersistance({ ...user, updatedAt })
 
         await this.userModel.updateOne({ _id }, rest).exec()
     }
@@ -68,7 +66,12 @@ export class UsersRepository implements IUserRepository {
         userEntity.username = user.username
         userEntity.password = user.password
         userEntity.email = user.email
+        userEntity.name = user.name
+        userEntity.surname = user.surname
         userEntity.role = user.role
+        userEntity.coach = user.coach
+        userEntity.createdAt = user.createdAt
+        userEntity.updatedAt = user.updatedAt
 
         return userEntity
     }
@@ -79,7 +82,12 @@ export class UsersRepository implements IUserRepository {
             username: userEntity.username,
             password: userEntity.password,
             email: userEntity.email,
+            name: userEntity.name,
+            surname: userEntity.surname,
             role: userEntity.role,
+            coach: userEntity.coach,
+            createdAt: userEntity.createdAt,
+            updatedAt: userEntity.updatedAt,
         }
     }
 }

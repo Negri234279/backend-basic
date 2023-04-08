@@ -22,15 +22,15 @@ export class UserBecomeCoachService {
             throw new ConflictException()
         }
 
-        user.role.push(UserRole.COACH)
+        const role = [...user.role, UserRole.COACH]
 
-        await this.usersRepository.update(user)
+        await this.usersRepository.update({ ...user, role })
 
         return {
             id: user.id,
             email: user.email,
             username: user.username,
-            role: user.role,
+            role,
         }
     }
 }

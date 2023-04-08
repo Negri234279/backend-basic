@@ -22,9 +22,9 @@ export class UserBecomeAthleteService {
             throw new ConflictException()
         }
 
-        user.role = user.role.filter((role) => role !== UserRole.COACH)
+        const role = user.role.filter((role) => role !== UserRole.COACH)
 
-        await this.usersRepository.update(user)
+        await this.usersRepository.update({ ...user, role })
 
         return {
             id: user.id,

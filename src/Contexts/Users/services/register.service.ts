@@ -32,10 +32,13 @@ export class UserRegisterService {
 
         const hashedPassword = await bcrypt.hash(password, 10)
 
+        const newDate = new Date()
         const user = {
             ...registerDto,
             password: hashedPassword,
             role: [UserRole.ATHLETE],
+            createdAt: newDate,
+            updatedAt: newDate,
         }
 
         await this.usersRepository.save(user)
