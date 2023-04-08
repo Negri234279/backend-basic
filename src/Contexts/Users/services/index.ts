@@ -4,6 +4,7 @@ import { UserChangePasswordService } from './changePassword.service'
 import { UserLoginService } from './login.service'
 import { UserProfileService } from './profile.service'
 import { UserRegisterService } from './register.service'
+import { UserResetPasswordService } from './resetPassword.service'
 
 export const UserServices = [
     UserLoginService,
@@ -12,4 +13,5 @@ export const UserServices = [
     UserBecomeCoachService,
     UserBecomeAthleteService,
     UserChangePasswordService,
+    UserResetPasswordService,
 ]
