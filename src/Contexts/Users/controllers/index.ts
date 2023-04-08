@@ -4,6 +4,7 @@ import { UserChangePasswordController } from './changePassword.controller'
 import { UserLoginController } from './login.controller'
 import { UserProfileController } from './profile.controller'
 import { UserRegisterController } from './register.controller'
+import { UserResetPasswordController } from './resetPassword.controller'
 
 export const UserControllers = [
     UserRegisterController,
@@ -12,4 +13,5 @@ export const UserControllers = [
     UserBecomeCoachController,
     UserBecomeAthleteController,
     UserChangePasswordController,
+    UserResetPasswordController,
 ]
