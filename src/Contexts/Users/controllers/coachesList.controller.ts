@@ -3,7 +3,8 @@ import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger'
 import { ReqPayload } from 'src/Core/infrastructure/@types/express'
 
 import { UserCoachesListService } from '../services/coachesList.service'
-import { Coach, IUser } from '../user'
+import { Coach } from '../user'
+import { UserModel } from '../user.model'
 
 @ApiTags('Users')
 @Controller('users')
@@ -25,14 +26,9 @@ export class UserCoachesListController {
         return this.serializeCoaches(coaches)
     }
 
-    private serializeCoaches(user: IUser[]): Coach[] {
-        return user.map((user: IUser): Coach => {
-            return {
-                id: user.id,
-                name: user.name,
-                surname: user.surname,
-                username: user.username,
-            }
+    private serializeCoaches(user: UserModel[]): Coach[] {
+        return user.map((user: UserModel): Coach => {
+            return user.toCoachProfile()
         })
     }
 }

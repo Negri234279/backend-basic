@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
 import { Model } from 'mongoose'
 
-import { IUser } from './user'
+import { UserModel } from './user.model'
 import { IUserRepository } from './user.repository'
 import { UserEntity } from './user.schema'
 import { UserRole } from './userRole'
@@ -10,11 +10,11 @@ import { UserRole } from './userRole'
 @Injectable()
 export class UsersRepository implements IUserRepository {
     constructor(
-        @InjectModel(UserEntity.name) private userModel: Model<UserEntity>,
+        @InjectModel(UserEntity.name) private collection: Model<UserEntity>,
     ) {}
 
-    async findOne(id: string): Promise<IUser | null> {
-        const userEntity = await this.userModel.findById(id).lean().exec()
+    async findOne(id: string): Promise<UserModel | null> {
+        const userEntity = await this.collection.findById(id).lean().exec()
         if (!userEntity) {
             return null
         }
@@ -22,8 +22,11 @@ export class UsersRepository implements IUserRepository {
         return this.toDomain(userEntity)
     }
 
-    async findOneByEmail(email: string): Promise<IUser | null> {
-        const userEntity = await this.userModel.findOne({ email }).lean().exec()
+    async findOneByEmail(email: string): Promise<UserModel | null> {
+        const userEntity = await this.collection
+            .findOne({ email })
+            .lean()
+            .exec()
         if (!userEntity) {
             return null
         }
@@ -31,8 +34,8 @@ export class UsersRepository implements IUserRepository {
         return this.toDomain(userEntity)
     }
 
-    async findOneByUsername(username: string): Promise<IUser | null> {
-        const userEntity = await this.userModel
+    async findOneByUsername(username: string): Promise<UserModel | null> {
+        const userEntity = await this.collection
             .findOne({ username })
             .lean()
             .exec()
@@ -43,8 +46,8 @@ export class UsersRepository implements IUserRepository {
         return this.toDomain(userEntity)
     }
 
-    async findCoaches(): Promise<IUser[] | null> {
-        const userEntity = await this.userModel
+    async findCoaches(): Promise<UserModel[] | null> {
+        const userEntity = await this.collection
             .find({ role: UserRole.COACH })
             .lean()
             .exec()
@@ -55,25 +58,26 @@ export class UsersRepository implements IUserRepository {
         return userEntity.map((user) => this.toDomain(user))
     }
 
-    async save(user: IUser): Promise<void> {
+    async save(user: UserModel): Promise<void> {
         const newUser = this.toPersistance(user)
-        const createdUser = new this.userModel(newUser)
+        const createdUser = new this.collection(newUser)
 
         await createdUser.save()
     }
 
-    async update(user: IUser): Promise<void> {
-        const updatedAt = new Date()
-        const { _id, ...rest } = this.toPersistance({ ...user, updatedAt })
+    async update(user: UserModel): Promise<void> {
+        user.updatedAt = new Date()
 
-        await this.userModel.updateOne({ _id }, rest).exec()
+        const { _id, ...rest } = this.toPersistance(user)
+
+        await this.collection.updateOne({ _id }, rest).exec()
     }
 
     async delete(id: string): Promise<void> {
-        await this.userModel.deleteOne({ _id: id }).exec()
+        await this.collection.deleteOne({ _id: id }).exec()
     }
 
-    private toPersistance(user: IUser): UserEntity {
+    private toPersistance(user: UserModel): UserEntity {
         const userEntity = new UserEntity()
         userEntity._id = user.id
         userEntity.username = user.username
@@ -89,18 +93,18 @@ export class UsersRepository implements IUserRepository {
         return userEntity
     }
 
-    private toDomain(userEntity: UserEntity): IUser {
-        return {
-            id: userEntity._id,
-            username: userEntity.username,
-            password: userEntity.password,
-            email: userEntity.email,
-            name: userEntity.name,
-            surname: userEntity.surname,
-            role: userEntity.role,
-            coach: userEntity.coach,
-            createdAt: userEntity.createdAt,
-            updatedAt: userEntity.updatedAt,
-        }
+    private toDomain(userEntity: UserEntity): UserModel {
+        return new UserModel(
+            userEntity._id,
+            userEntity.username,
+            userEntity.password,
+            userEntity.email,
+            userEntity.name,
+            userEntity.surname,
+            userEntity.role,
+            userEntity.createdAt,
+            userEntity.updatedAt,
+            userEntity.coach,
+        )
     }
 }

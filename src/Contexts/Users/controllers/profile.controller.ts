@@ -27,14 +27,6 @@ export class UserProfileController {
     async execute(@Req() req: ReqPayload): Promise<IUserProfile> {
         const user = await this.userProfileService.execute(req.user.id)
 
-        return {
-            username: user.username,
-            email: user.email,
-            name: user.name,
-            surname: user.surname,
-            role: user.role,
-            createdAt: user.createdAt,
-            updatedAt: user.updatedAt,
-        }
+        return user.toProfile()
     }
 }

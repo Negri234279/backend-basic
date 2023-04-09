@@ -3,7 +3,6 @@ import {
     NotFoundException,
     UnauthorizedException,
 } from '@nestjs/common'
-import * as bcrypt from 'bcrypt'
 
 import { ResetPasswordDto } from '../dtos'
 import { UsersRepository } from '../users.repository'
@@ -22,10 +21,9 @@ export class UserResetPasswordService {
             throw new UnauthorizedException()
         }
 
-        const newPassword = Math.random().toString(36).slice(-16)
-        const hashedPassword = await bcrypt.hash(newPassword, 10)
+        const newPassword = await user.randomPassword()
 
-        await this.usersRepository.update({ ...user, password: hashedPassword })
+        await this.usersRepository.update(user)
 
         return newPassword
     }
