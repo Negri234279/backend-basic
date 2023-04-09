@@ -1,11 +1,7 @@
-import {
-    ConflictException,
-    Injectable,
-    NotFoundException,
-} from '@nestjs/common'
+import { ConflictException, Injectable } from '@nestjs/common'
 
-import { UserModel } from '../user.model'
 import { UsersRepository } from '../database/users.repository'
+import { UserModel } from '../user.model'
 
 @Injectable()
 export class UserAddCoachRoleService {
@@ -13,11 +9,7 @@ export class UserAddCoachRoleService {
 
     async execute(id: string): Promise<UserModel> {
         const user = await this.usersRepository.findOne(id)
-        if (!user) {
-            throw new NotFoundException()
-        }
-
-        if (user.isCoach()) {
+        if (!user || user.isCoach()) {
             throw new ConflictException()
         }
 

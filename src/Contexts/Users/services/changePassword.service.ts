@@ -1,11 +1,7 @@
-import {
-    ConflictException,
-    Injectable,
-    NotFoundException,
-} from '@nestjs/common'
+import { ConflictException, Injectable } from '@nestjs/common'
 
-import { ChangePasswordDto } from '../dtos'
 import { UsersRepository } from '../database/users.repository'
+import { ChangePasswordDto } from '../dtos'
 
 @Injectable()
 export class UserChangePasswordService {
@@ -22,7 +18,7 @@ export class UserChangePasswordService {
 
         const user = await this.usersRepository.findOne(id)
         if (!user) {
-            throw new NotFoundException()
+            throw new ConflictException()
         }
 
         await user.validatePassword(currentPassword)

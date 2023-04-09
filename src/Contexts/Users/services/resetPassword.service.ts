@@ -1,11 +1,11 @@
 import {
+    ConflictException,
     Injectable,
-    NotFoundException,
     UnauthorizedException,
 } from '@nestjs/common'
 
-import { ResetPasswordDto } from '../dtos'
 import { UsersRepository } from '../database/users.repository'
+import { ResetPasswordDto } from '../dtos'
 
 @Injectable()
 export class UserResetPasswordService {
@@ -14,7 +14,7 @@ export class UserResetPasswordService {
     async execute(id: string, { email }: ResetPasswordDto): Promise<string> {
         const user = await this.usersRepository.findOne(id)
         if (!user) {
-            throw new NotFoundException()
+            throw new ConflictException()
         }
 
         if (user.email !== email) {

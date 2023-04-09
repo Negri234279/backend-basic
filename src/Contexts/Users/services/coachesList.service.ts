@@ -1,7 +1,7 @@
 import {
+    ConflictException,
     ForbiddenException,
     Injectable,
-    NotFoundException,
 } from '@nestjs/common'
 import { IPaginated } from 'src/Core/infrastructure/@types/pagination'
 import { PaginationDto } from 'src/Core/infrastructure/dtos/pagination.dto'
@@ -19,7 +19,7 @@ export class UserCoachesListService {
     ): Promise<IPaginated<UserModel>> {
         const user = await this.usersRepository.findOne(id)
         if (!user) {
-            throw new NotFoundException()
+            throw new ConflictException()
         }
 
         if (!user.isAthlete()) {

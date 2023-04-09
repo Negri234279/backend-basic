@@ -1,7 +1,7 @@
-import { Injectable, NotFoundException } from '@nestjs/common'
+import { ConflictException, Injectable } from '@nestjs/common'
 
-import { UserModel } from '../user.model'
 import { UsersRepository } from '../database/users.repository'
+import { UserModel } from '../user.model'
 
 @Injectable()
 export class UserProfileService {
@@ -10,7 +10,7 @@ export class UserProfileService {
     async execute(id: string): Promise<UserModel> {
         const user = await this.usersRepository.findOne(id)
         if (!user) {
-            throw new NotFoundException()
+            throw new ConflictException()
         }
 
         return user
