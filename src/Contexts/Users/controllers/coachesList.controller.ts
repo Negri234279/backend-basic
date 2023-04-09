@@ -1,6 +1,8 @@
-import { Controller, Get, Req } from '@nestjs/common'
+import { Controller, Get, Query, Req } from '@nestjs/common'
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger'
 import { ReqPayload } from 'src/Core/infrastructure/@types/express'
+import { IPaginatedRes } from 'src/Core/infrastructure/@types/pagination'
+import { PaginationDto } from 'src/Core/infrastructure/dtos/pagination.dto'
 
 import { UserCoachesListService } from '../services/coachesList.service'
 import { Coach } from '../user'
@@ -20,10 +22,21 @@ export class UserCoachesListController {
         description:
             'Returns a list of all coaches registered in the system, with their basic information and coach-specific details',
     })
-    async execute(@Req() req: ReqPayload): Promise<Coach[]> {
-        const coaches = await this.userCoachesListService.execute(req.user.id)
+    async execute(
+        @Req() req: ReqPayload,
+        @Query() pagination: PaginationDto,
+    ): Promise<IPaginatedRes<Coach>> {
+        const { data, count } = await this.userCoachesListService.execute(
+            req.user.id,
+            pagination,
+        )
 
-        return this.serializeCoaches(coaches)
+        return {
+            data: this.serializeCoaches(data),
+            count,
+            currentPage: pagination.page,
+            totalPages: Math.ceil(count / pagination.limit),
+        }
     }
 
     private serializeCoaches(user: UserModel[]): Coach[] {

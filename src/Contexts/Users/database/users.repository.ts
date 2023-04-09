@@ -1,11 +1,12 @@
 import { Injectable } from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
 import { Model } from 'mongoose'
+import { PaginationDto } from 'src/Core/infrastructure/dtos/pagination.dto'
 
 import { UserModel } from '../user.model'
+import { UserRole } from '../userRole'
 import { IUserRepository } from './user.repository'
 import { UserEntity } from './user.schema'
-import { UserRole } from '../userRole'
 
 @Injectable()
 export class UsersRepository implements IUserRepository {
@@ -46,16 +47,19 @@ export class UsersRepository implements IUserRepository {
         return this.toDomain(userEntity)
     }
 
-    async findCoaches(): Promise<UserModel[] | null> {
+    async findCoaches(pagination: PaginationDto): Promise<UserModel[]> {
         const userEntity = await this.collection
             .find({ role: UserRole.COACH })
+            .skip(pagination.page)
+            .limit(pagination.limit)
             .lean()
             .exec()
-        if (!userEntity) {
-            return []
-        }
 
         return userEntity.map((user) => this.toDomain(user))
+    }
+
+    async countCoaches(): Promise<number> {
+        return this.collection.countDocuments({ role: UserRole.COACH }).exec()
     }
 
     async save(user: UserModel): Promise<void> {
