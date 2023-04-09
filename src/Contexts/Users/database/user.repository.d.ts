@@ -1,4 +1,4 @@
-import { IUser } from './user'
+import { IUser } from '../user'
 
 export interface IUserRepository {
     findOne(id: string): Promise<IUser | null>

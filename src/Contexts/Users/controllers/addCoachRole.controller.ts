@@ -8,30 +8,30 @@ import {
 import { ReqPayload } from 'src/Core/infrastructure/@types/express'
 import { AccessToken } from 'src/Core/infrastructure/@types/userPayload'
 
-import { JwtProvider } from '../providers/jwt.service'
-import { UserBecomeAthleteService } from '../services/becomeAthlete.service'
 import { AccessTokenDto } from '../dtos/accessTokenDto'
+import { JwtProvider } from '../providers/jwt.service'
+import { UserAddCoachRoleService } from '../services/addCoachRole.service'
 
 @ApiTags('Users')
 @Controller('users')
-export class UserBecomeAthleteController {
+export class UserAddCoachRoleController {
     constructor(
-        private readonly userBecomeAthleteService: UserBecomeAthleteService,
+        private readonly userAddCoachRoleService: UserAddCoachRoleService,
         private readonly jwtProvider: JwtProvider,
     ) {}
 
-    @Patch('become-athlete')
+    @Patch('add-coach-role')
     @ApiBearerAuth()
     @ApiOperation({
-        summary: 'Become an athlete',
-        description:
-            'Update the users role to athlete and return a new access token.',
+        summary: 'Become a coach',
+        description: 'Promote the current user to coach status',
     })
     @ApiOkResponse({
         type: AccessTokenDto,
     })
     async execute(@Req() req: ReqPayload): Promise<AccessToken> {
-        const payload = await this.userBecomeAthleteService.execute(req.user.id)
+        const user = await this.userAddCoachRoleService.execute(req.user.id)
+        const payload = user.toPayload()
 
         return await this.jwtProvider.signToken(payload)
     }

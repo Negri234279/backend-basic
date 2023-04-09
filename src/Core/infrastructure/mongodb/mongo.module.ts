@@ -1,7 +1,7 @@
 import { Module, Global } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { MongooseModule } from '@nestjs/mongoose'
-import { EnvVar } from './config/configuration'
+import { EnvVar } from '../config/configuration'
 
 @Global()
 @Module({

@@ -1,13 +1,7 @@
-import {
-    ConflictException,
-    Injectable,
-    NotFoundException,
-    UnauthorizedException,
-} from '@nestjs/common'
-import * as bcrypt from 'bcrypt'
+import { ConflictException, Injectable } from '@nestjs/common'
 
+import { UsersRepository } from '../database/users.repository'
 import { ChangePasswordDto } from '../dtos'
-import { UsersRepository } from '../users.repository'
 
 @Injectable()
 export class UserChangePasswordService {
@@ -24,16 +18,12 @@ export class UserChangePasswordService {
 
         const user = await this.usersRepository.findOne(id)
         if (!user) {
-            throw new NotFoundException()
+            throw new ConflictException()
         }
 
-        const isMatch = await bcrypt.compare(currentPassword, user.password)
-        if (!isMatch) {
-            throw new UnauthorizedException()
-        }
+        await user.validatePassword(currentPassword)
+        await user.changePassword(newPassword)
 
-        const hashedPassword = await bcrypt.hash(newPassword, 10)
-
-        await this.usersRepository.update({ ...user, password: hashedPassword })
+        await this.usersRepository.update(user)
     }
 }

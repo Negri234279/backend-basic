@@ -31,6 +31,8 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
             })
         }
 
-        return await this.userLoginService.execute(credentials)
+        const user = await this.userLoginService.execute(credentials)
+
+        return user.toPayload()
     }
 }

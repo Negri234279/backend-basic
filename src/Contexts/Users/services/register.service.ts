@@ -1,9 +1,8 @@
 import { ConflictException, Injectable } from '@nestjs/common'
-import * as bcrypt from 'bcrypt'
 
 import { RegisterDto } from '../dtos'
-import { UserRole } from '../userRole'
-import { UsersRepository } from '../users.repository'
+import { UserModel } from '../user.model'
+import { UsersRepository } from '../database/users.repository'
 
 @Injectable()
 export class UserRegisterService {
@@ -30,13 +29,16 @@ export class UserRegisterService {
             throw new ConflictException()
         }
 
-        const hashedPassword = await bcrypt.hash(password, 10)
+        const hashedPassword = await UserModel.hashPassword(password)
 
-        const user = {
-            ...registerDto,
-            password: hashedPassword,
-            role: [UserRole.ATHLETE],
-        }
+        const user = UserModel.create(
+            id,
+            username,
+            hashedPassword,
+            email,
+            registerDto.name,
+            registerDto.surname,
+        )
 
         await this.usersRepository.save(user)
     }

@@ -1,12 +1,12 @@
 import { UserRole } from 'src/Contexts/Users/userRole'
 
-export interface UserPayload {
+export type UserPayload = {
     id: string
     email: string
     username: string
     role: UserRole[]
 }
 
-export interface AccessToken {
+export type AccessToken = {
     access_token: string
 }

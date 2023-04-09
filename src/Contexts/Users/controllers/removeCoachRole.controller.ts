@@ -10,27 +10,29 @@ import { AccessToken } from 'src/Core/infrastructure/@types/userPayload'
 
 import { AccessTokenDto } from '../dtos/accessTokenDto'
 import { JwtProvider } from '../providers/jwt.service'
-import { UserBecomeCoachService } from '../services/becomeCoach.service'
+import { UserRemoveCoachRoleService } from '../services/removeCoachRole.service'
 
 @ApiTags('Users')
 @Controller('users')
-export class UserBecomeCoachController {
+export class UserRemoveCoachRoleController {
     constructor(
-        private readonly userBecomeCoachService: UserBecomeCoachService,
+        private readonly userRemoveCoachRoleService: UserRemoveCoachRoleService,
         private readonly jwtProvider: JwtProvider,
     ) {}
 
-    @Patch('become-coach')
+    @Patch('remove-coach-role')
     @ApiBearerAuth()
     @ApiOperation({
-        summary: 'Become a coach',
-        description: 'Promote the current user to coach status',
+        summary: 'Become an athlete',
+        description:
+            'Update the users role to athlete and return a new access token.',
     })
     @ApiOkResponse({
         type: AccessTokenDto,
     })
     async execute(@Req() req: ReqPayload): Promise<AccessToken> {
-        const payload = await this.userBecomeCoachService.execute(req.user.id)
+        const user = await this.userRemoveCoachRoleService.execute(req.user.id)
+        const payload = user.toPayload()
 
         return await this.jwtProvider.signToken(payload)
     }

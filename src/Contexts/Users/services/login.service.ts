@@ -1,19 +1,14 @@
-import {
-    ConflictException,
-    Injectable,
-    UnauthorizedException,
-} from '@nestjs/common'
-import * as bcrypt from 'bcrypt'
-import { UserPayload } from 'src/Core/infrastructure/@types/userPayload'
+import { ConflictException, Injectable } from '@nestjs/common'
 
 import { LoginDto } from '../dtos'
-import { UsersRepository } from '../users.repository'
+import { UserModel } from '../user.model'
+import { UsersRepository } from '../database/users.repository'
 
 @Injectable()
 export class UserLoginService {
     constructor(private readonly usersRepository: UsersRepository) {}
 
-    async execute(loginDto: LoginDto): Promise<UserPayload> {
+    async execute(loginDto: LoginDto): Promise<UserModel> {
         const { email, password } = loginDto
 
         const user = await this.usersRepository.findOneByEmail(email)
@@ -21,16 +16,8 @@ export class UserLoginService {
             throw new ConflictException()
         }
 
-        const isMatch = await bcrypt.compare(password, user.password)
-        if (!isMatch) {
-            throw new UnauthorizedException()
-        }
+        await user.validatePassword(password)
 
-        return {
-            id: user.id,
-            email: user.email,
-            username: user.username,
-            role: user.role,
-        }
+        return user
     }
 }

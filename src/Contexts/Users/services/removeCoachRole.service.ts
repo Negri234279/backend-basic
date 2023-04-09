@@ -1,30 +1,30 @@
 import {
     ConflictException,
+    ForbiddenException,
     Injectable,
-    UnauthorizedException,
 } from '@nestjs/common'
 
 import { UsersRepository } from '../database/users.repository'
-import { ResetPasswordDto } from '../dtos'
+import { UserModel } from '../user.model'
 
 @Injectable()
-export class UserResetPasswordService {
+export class UserRemoveCoachRoleService {
     constructor(private readonly usersRepository: UsersRepository) {}
 
-    async execute(id: string, { email }: ResetPasswordDto): Promise<string> {
+    async execute(id: string): Promise<UserModel> {
         const user = await this.usersRepository.findOne(id)
         if (!user) {
             throw new ConflictException()
         }
 
-        if (user.email !== email) {
-            throw new UnauthorizedException()
+        if (!user.isCoach()) {
+            throw new ForbiddenException()
         }
 
-        const newPassword = await user.randomPassword()
+        user.removeCoachRole()
 
         await this.usersRepository.update(user)
 
-        return newPassword
+        return user
     }
 }

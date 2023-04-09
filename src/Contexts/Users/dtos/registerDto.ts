@@ -22,4 +22,14 @@ export class RegisterDto {
     @IsString()
     @IsNotEmpty()
     password: string
+
+    @ApiProperty({ type: 'string' })
+    @IsString()
+    @IsNotEmpty()
+    name: string
+
+    @ApiProperty({ type: 'string' })
+    @IsString()
+    @IsNotEmpty()
+    surname: string
 }
