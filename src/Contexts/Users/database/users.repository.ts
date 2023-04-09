@@ -2,10 +2,10 @@ import { Injectable } from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
 import { Model } from 'mongoose'
 
-import { UserModel } from './user.model'
+import { UserModel } from '../user.model'
 import { IUserRepository } from './user.repository'
 import { UserEntity } from './user.schema'
-import { UserRole } from './userRole'
+import { UserRole } from '../userRole'
 
 @Injectable()
 export class UsersRepository implements IUserRepository {

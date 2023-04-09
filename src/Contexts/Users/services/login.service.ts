@@ -2,7 +2,7 @@ import { ConflictException, Injectable } from '@nestjs/common'
 
 import { LoginDto } from '../dtos'
 import { UserModel } from '../user.model'
-import { UsersRepository } from '../users.repository'
+import { UsersRepository } from '../database/users.repository'
 
 @Injectable()
 export class UserLoginService {

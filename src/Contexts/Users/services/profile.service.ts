@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common'
 
 import { UserModel } from '../user.model'
-import { UsersRepository } from '../users.repository'
+import { UsersRepository } from '../database/users.repository'
 
 @Injectable()
 export class UserProfileService {

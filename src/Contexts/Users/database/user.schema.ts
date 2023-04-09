@@ -1,9 +1,10 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
 import { HydratedDocument } from 'mongoose'
-import { UserRole } from './userRole'
 import { BaseEntity } from 'src/Core/infrastructure/mongodb/baseEntity'
 
-@Schema({ timestamps: true })
+import { UserRole } from '../userRole'
+
+@Schema({ timestamps: true, collection: 'users' })
 export class UserEntity extends BaseEntity {
     @Prop({ required: true })
     username: string

@@ -5,7 +5,7 @@ import {
 } from '@nestjs/common'
 
 import { ChangePasswordDto } from '../dtos'
-import { UsersRepository } from '../users.repository'
+import { UsersRepository } from '../database/users.repository'
 
 @Injectable()
 export class UserChangePasswordService {
