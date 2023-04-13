@@ -1,3 +1,5 @@
+import { WorkoutsModule } from 'src/Contexts/Workouts/workouts.module'
+
 import { Module } from '@nestjs/common'
 import { ConfigModule, ConfigService } from '@nestjs/config'
 import { APP_GUARD } from '@nestjs/core'
@@ -16,6 +18,7 @@ import { MongoModule } from './infrastructure/mongodb/mongo.module'
         }),
         MongoModule,
         UsersModule,
+        WorkoutsModule,
     ],
     providers: [
         {
