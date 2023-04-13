@@ -1,7 +1,8 @@
-import { Injectable } from '@nestjs/common'
-import { InjectModel } from '@nestjs/mongoose'
 import { Model } from 'mongoose'
 import { PaginationDto } from 'src/Core/infrastructure/dtos/pagination.dto'
+
+import { Injectable } from '@nestjs/common'
+import { InjectModel } from '@nestjs/mongoose'
 
 import { UserModel } from '../user.model'
 import { UserRole } from '../userRole'
@@ -13,6 +14,10 @@ export class UsersRepository implements IUserRepository {
     constructor(
         @InjectModel(UserEntity.name) private collection: Model<UserEntity>,
     ) {}
+
+    async exist(id: string): Promise<boolean> {
+        return !!(await this.collection.countDocuments({ _id: id }).exec())
+    }
 
     async findOne(id: string): Promise<UserModel | null> {
         const userEntity = await this.collection.findById(id).lean().exec()

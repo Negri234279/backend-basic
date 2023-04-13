@@ -1,12 +1,13 @@
-import { Module } from '@nestjs/common'
 import { JwtGlobalModule } from 'src/Core/infrastructure/jwt.module'
 
+import { Module } from '@nestjs/common'
+
 import { UserControllers } from './controllers'
+import { UsersRepository } from './database/users.repository'
+import { UsersDbModule } from './database/usersDb.module'
 import { UserProviders } from './providers'
 import { UserServices } from './services'
 import { LocalStrategy } from './strategies/local.strategy'
-import { UsersRepository } from './database/users.repository'
-import { UsersDbModule } from './database/usersDb.module'
 
 @Module({
     imports: [JwtGlobalModule, UsersDbModule],
@@ -17,5 +18,6 @@ import { UsersDbModule } from './database/usersDb.module'
         LocalStrategy,
     ],
     controllers: [...UserControllers],
+    exports: [UsersRepository, UsersDbModule],
 })
 export class UsersModule {}
