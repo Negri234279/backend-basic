@@ -18,10 +18,10 @@ export class WorkoutUpdateService {
         user: UserPayload,
         id: string,
         updateDto: UpdateworkoutDto,
-    ): Promise<any> {
+    ): Promise<void> {
         const userExist = await this.usersRepository.exist(user.id)
         if (!userExist) {
-            throw new ConflictException()
+            new ConflictException()
         }
 
         const workout = await this.workoutsRepository.findOne(id)

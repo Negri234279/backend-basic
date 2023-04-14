@@ -1,5 +1,6 @@
 import { UserRole } from 'src/Contexts/Users/userRole'
 import { ReqPayload } from 'src/Core/infrastructure/@types/express'
+import { IdDto } from 'src/Core/infrastructure/dtos/id.dto'
 
 import {
     Body,
@@ -24,13 +25,13 @@ export class WorkoutUpdateController {
     @Patch(':id')
     async execute(
         @Req() req: ReqPayload,
-        @Param('id') id: string,
+        @Param() { id }: IdDto,
         @Body() body: UpdateworkoutDto,
     ): Promise<void> {
         if (!req.user.role.includes(UserRole.ATHLETE)) {
             throw new ForbiddenException()
         }
 
-        this.workoutUpdateService.execute(req.user, id, body)
+        await this.workoutUpdateService.execute(req.user, id, body)
     }
 }

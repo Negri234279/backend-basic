@@ -21,6 +21,6 @@ export class WorkoutCreateController {
             throw new ForbiddenException()
         }
 
-        this.workoutCreateService.execute(req.user, body)
+        await this.workoutCreateService.execute(req.user, body)
     }
 }

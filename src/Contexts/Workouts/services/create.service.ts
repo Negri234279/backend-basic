@@ -17,7 +17,7 @@ export class WorkoutCreateService {
     async execute(
         user: UserPayload,
         createDto: CreateWorkoutDto,
-    ): Promise<any> {
+    ): Promise<void> {
         const userExist = await this.usersRepository.exist(user.id)
         if (!userExist) {
             throw new ConflictException()
