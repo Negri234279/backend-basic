@@ -1,7 +1,12 @@
 import { UsersRepository } from 'src/Contexts/Users/database/users.repository'
 import { UserPayload } from 'src/Core/infrastructure/@types/userPayload'
 
-import { ConflictException, Injectable } from '@nestjs/common'
+import {
+    ConflictException,
+    ForbiddenException,
+    Injectable,
+    NotFoundException,
+} from '@nestjs/common'
 
 import { WorkoutsRepository } from '../database/workouts.repository'
 
@@ -18,9 +23,13 @@ export class WorkoutDeleteService {
             throw new ConflictException()
         }
 
-        const workoutExist = await this.workoutsRepository.exist(id)
+        const workoutExist = await this.workoutsRepository.findOne(id)
         if (!workoutExist) {
-            throw new ConflictException()
+            throw new NotFoundException()
+        }
+
+        if (workoutExist.coachId) {
+            throw new ForbiddenException()
         }
 
         await this.workoutsRepository.delete(id)

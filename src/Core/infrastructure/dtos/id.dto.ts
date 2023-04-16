@@ -1,4 +1,3 @@
-// eslint-disable-next-line prettier/prettier
 import { IsNotEmpty, IsUUID } from 'class-validator'
 
 import { ApiProperty } from '@nestjs/swagger'
