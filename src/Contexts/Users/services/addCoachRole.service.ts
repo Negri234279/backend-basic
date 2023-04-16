@@ -1,4 +1,8 @@
-import { ConflictException, Injectable } from '@nestjs/common'
+import {
+    ConflictException,
+    ForbiddenException,
+    Injectable,
+} from '@nestjs/common'
 
 import { UsersRepository } from '../database/users.repository'
 import { UserModel } from '../user.model'
@@ -11,6 +15,10 @@ export class UserAddCoachRoleService {
         const user = await this.usersRepository.findOne(id)
         if (!user || user.isCoach()) {
             throw new ConflictException()
+        }
+
+        if (!user.isAthlete()) {
+            throw new ForbiddenException()
         }
 
         user.addCoachRole()

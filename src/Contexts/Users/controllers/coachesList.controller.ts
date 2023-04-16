@@ -1,12 +1,15 @@
-import { Controller, Get, Query, Req } from '@nestjs/common'
-import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger'
 import { ReqPayload } from 'src/Core/infrastructure/@types/express'
 import { IPaginatedRes } from 'src/Core/infrastructure/@types/pagination'
+import { Roles } from 'src/Core/infrastructure/decorators/roles.decorator'
 import { PaginationDto } from 'src/Core/infrastructure/dtos/pagination.dto'
+
+import { Controller, Get, Query, Req } from '@nestjs/common'
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger'
 
 import { UserCoachesListService } from '../services/coachesList.service'
 import { Coach } from '../user'
 import { UserModel } from '../user.model'
+import { UserRole } from '../userRole'
 
 @ApiTags('Users')
 @Controller('users')
@@ -15,13 +18,14 @@ export class UserCoachesListController {
         private readonly userCoachesListService: UserCoachesListService,
     ) {}
 
-    @Get('coaches')
     @ApiBearerAuth()
     @ApiOperation({
         summary: 'Get list of coaches',
         description:
             'Returns a list of all coaches registered in the system, with their basic information and coach-specific details',
     })
+    @Get('coaches')
+    @Roles(UserRole.ATHLETE, UserRole.COACH)
     async execute(
         @Req() req: ReqPayload,
         @Query() pagination: PaginationDto,
