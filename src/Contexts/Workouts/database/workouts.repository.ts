@@ -26,9 +26,29 @@ export class WorkoutsRepository {
         return this.toDomain(workoutEntity)
     }
 
+    async findOneByAthelte(
+        athelteId: string,
+        id: string,
+    ): Promise<WorkoutModel | null> {
+        const workoutEntity = await this.collection
+            .findOne({
+                _id: id,
+                athelteId,
+            })
+            .lean()
+            .exec()
+        if (!workoutEntity) {
+            return null
+        }
+
+        return this.toDomain(workoutEntity)
+    }
+
     async findByAthelte(id: string): Promise<WorkoutModel[]> {
         const workoutEntity = await this.collection
-            .find({ athelteId: id })
+            .find({
+                $and: [{ athelteId: id }, { coachId: null }],
+            })
             .lean()
             .exec()
 
