@@ -1,7 +1,8 @@
 import { UserRole } from 'src/Contexts/Users/userRole'
 import { ReqPayload } from 'src/Core/infrastructure/@types/express'
+import { Roles } from 'src/Core/infrastructure/decorators/roles.decorator'
 
-import { Body, Controller, ForbiddenException, Post, Req } from '@nestjs/common'
+import { Body, Controller, Post, Req } from '@nestjs/common'
 import { ApiTags } from '@nestjs/swagger'
 
 import { CreateWorkoutDto } from '../dtos/createWorkout.dto'
@@ -13,14 +14,11 @@ export class WorkoutCreateController {
     constructor(private readonly workoutCreateService: WorkoutCreateService) {}
 
     @Post()
+    @Roles(UserRole.ATHLETE)
     async execute(
         @Req() req: ReqPayload,
         @Body() body: CreateWorkoutDto,
     ): Promise<void> {
-        if (!req.user.role.includes(UserRole.ATHLETE)) {
-            throw new ForbiddenException()
-        }
-
         await this.workoutCreateService.execute(req.user, body)
     }
 }

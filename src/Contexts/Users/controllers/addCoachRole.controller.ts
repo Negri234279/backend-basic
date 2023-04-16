@@ -1,3 +1,7 @@
+import { ReqPayload } from 'src/Core/infrastructure/@types/express'
+import { AccessToken } from 'src/Core/infrastructure/@types/userPayload'
+import { Roles } from 'src/Core/infrastructure/decorators/roles.decorator'
+
 import { Controller, Patch, Req } from '@nestjs/common'
 import {
     ApiBearerAuth,
@@ -5,12 +9,11 @@ import {
     ApiOperation,
     ApiTags,
 } from '@nestjs/swagger'
-import { ReqPayload } from 'src/Core/infrastructure/@types/express'
-import { AccessToken } from 'src/Core/infrastructure/@types/userPayload'
 
 import { AccessTokenDto } from '../dtos/accessTokenDto'
 import { JwtProvider } from '../providers/jwt.service'
 import { UserAddCoachRoleService } from '../services/addCoachRole.service'
+import { UserRole } from '../userRole'
 
 @ApiTags('Users')
 @Controller('users')
@@ -20,7 +23,6 @@ export class UserAddCoachRoleController {
         private readonly jwtProvider: JwtProvider,
     ) {}
 
-    @Patch('add-coach-role')
     @ApiBearerAuth()
     @ApiOperation({
         summary: 'Become a coach',
@@ -29,6 +31,8 @@ export class UserAddCoachRoleController {
     @ApiOkResponse({
         type: AccessTokenDto,
     })
+    @Patch('add-coach-role')
+    @Roles(UserRole.ATHLETE)
     async execute(@Req() req: ReqPayload): Promise<AccessToken> {
         const user = await this.userAddCoachRoleService.execute(req.user.id)
         const payload = user.toPayload()

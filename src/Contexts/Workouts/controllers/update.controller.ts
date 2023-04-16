@@ -1,16 +1,9 @@
 import { UserRole } from 'src/Contexts/Users/userRole'
 import { ReqPayload } from 'src/Core/infrastructure/@types/express'
+import { Roles } from 'src/Core/infrastructure/decorators/roles.decorator'
 import { IdDto } from 'src/Core/infrastructure/dtos/id.dto'
 
-import {
-    Body,
-    Controller,
-    ForbiddenException,
-    HttpCode,
-    Param,
-    Patch,
-    Req,
-} from '@nestjs/common'
+import { Body, Controller, HttpCode, Param, Patch, Req } from '@nestjs/common'
 import { ApiTags } from '@nestjs/swagger'
 
 import { UpdateworkoutDto } from '../dtos/updateWorkout.dto'
@@ -23,15 +16,12 @@ export class WorkoutUpdateController {
 
     @HttpCode(204)
     @Patch(':id')
+    @Roles(UserRole.ATHLETE)
     async execute(
         @Req() req: ReqPayload,
         @Param() { id }: IdDto,
         @Body() body: UpdateworkoutDto,
     ): Promise<void> {
-        if (!req.user.role.includes(UserRole.ATHLETE)) {
-            throw new ForbiddenException()
-        }
-
         await this.workoutUpdateService.execute(req.user, id, body)
     }
 }

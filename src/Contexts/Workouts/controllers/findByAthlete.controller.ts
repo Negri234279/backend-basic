@@ -1,13 +1,8 @@
 import { UserRole } from 'src/Contexts/Users/userRole'
 import { ReqPayload } from 'src/Core/infrastructure/@types/express'
+import { Roles } from 'src/Core/infrastructure/decorators/roles.decorator'
 
-import {
-    Controller,
-    ForbiddenException,
-    Get,
-    HttpException,
-    Req,
-} from '@nestjs/common'
+import { Controller, Get, HttpException, Req } from '@nestjs/common'
 import { ApiTags } from '@nestjs/swagger'
 
 import { WorkoutFindByAthleteService } from '../services/findByAthlete.service'
@@ -21,11 +16,8 @@ export class WorkoutFindByAthleteController {
     ) {}
 
     @Get()
+    @Roles(UserRole.ATHLETE)
     async execute(@Req() req: ReqPayload): Promise<WorkoutModel[]> {
-        if (!req.user.role.includes(UserRole.ATHLETE)) {
-            throw new ForbiddenException()
-        }
-
         const workouts = await this.workoutFindByAthleteService.execute(
             req.user,
         )

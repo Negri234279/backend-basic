@@ -1,15 +1,9 @@
 import { UserRole } from 'src/Contexts/Users/userRole'
 import { ReqPayload } from 'src/Core/infrastructure/@types/express'
+import { Roles } from 'src/Core/infrastructure/decorators/roles.decorator'
 import { IdDto } from 'src/Core/infrastructure/dtos/id.dto'
 
-import {
-    Controller,
-    Delete,
-    ForbiddenException,
-    HttpCode,
-    Param,
-    Req,
-} from '@nestjs/common'
+import { Controller, Delete, HttpCode, Param, Req } from '@nestjs/common'
 import { ApiTags } from '@nestjs/swagger'
 
 import { WorkoutDeleteService } from '../services/delete.service'
@@ -21,14 +15,11 @@ export class WorkoutDeleteController {
 
     @HttpCode(204)
     @Delete(':id')
+    @Roles(UserRole.ATHLETE)
     async execute(
         @Req() req: ReqPayload,
         @Param() { id }: IdDto,
     ): Promise<void> {
-        if (!req.user.role.includes(UserRole.ATHLETE)) {
-            throw new ForbiddenException()
-        }
-
         await this.workoutDeleteService.execute(req.user, id)
     }
 }
