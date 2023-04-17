@@ -27,13 +27,13 @@ export class WorkoutsRepository {
     }
 
     async findOneByAthelte(
-        athelteId: string,
+        athleteId: string,
         id: string,
     ): Promise<WorkoutModel | null> {
         const workoutEntity = await this.collection
             .findOne({
                 _id: id,
-                athelteId,
+                athleteId,
             })
             .lean()
             .exec()
@@ -47,7 +47,7 @@ export class WorkoutsRepository {
     async findByAthelte(id: string): Promise<WorkoutModel[]> {
         const workoutEntity = await this.collection
             .find({
-                $and: [{ athelteId: id }, { coachId: null }],
+                $and: [{ athleteId: id }, { coachId: null }],
             })
             .lean()
             .exec()
@@ -84,7 +84,7 @@ export class WorkoutsRepository {
         workoutEntity.date = workoutModel.date
         workoutEntity.isCompleted = workoutModel.isCompleted
         workoutEntity.isSuccessful = workoutModel.isSuccessful
-        workoutEntity.athelteId = workoutModel.athleteId
+        workoutEntity.athleteId = workoutModel.athleteId
         workoutEntity.coachId = workoutModel.coachId
         workoutEntity.createdAt = workoutModel.createdAt
         workoutEntity.updatedAt = workoutModel.updatedAt
@@ -102,7 +102,7 @@ export class WorkoutsRepository {
             date: workoutEntity.date,
             isCompleted: workoutEntity.isCompleted,
             isSuccessful: workoutEntity.isSuccessful,
-            athleteId: workoutEntity.athelteId,
+            athleteId: workoutEntity.athleteId,
             coachId: workoutEntity.coachId,
             createdAt: workoutEntity.createdAt,
             updatedAt: workoutEntity.updatedAt,

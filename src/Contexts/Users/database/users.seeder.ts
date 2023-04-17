@@ -1,12 +1,14 @@
-import { faker } from '@faker-js/faker'
-import { Injectable } from '@nestjs/common'
-import { InjectModel } from '@nestjs/mongoose'
 import { Model } from 'mongoose'
 import { Seeder } from 'nestjs-seeder'
 import { v4 as uuidv4 } from 'uuid'
 
-import { UserEntity } from './user.schema'
+import { faker } from '@faker-js/faker'
+import { Injectable } from '@nestjs/common'
+import { InjectModel } from '@nestjs/mongoose'
+
+import { IUser } from '../user'
 import { UserRole } from '../userRole'
+import { UserEntity } from './user.schema'
 
 @Injectable()
 export class UsersSeeder implements Seeder {
@@ -16,11 +18,15 @@ export class UsersSeeder implements Seeder {
     ) {}
 
     async seed(): Promise<any> {
-        const users = []
+        const numUsersSeeder = Number(process.env.USERS_SEEDER) ?? 98
+        const users: UserEntity[] = []
 
-        for (let i = 0; i < 100; i++) {
+        for (let i = 0; i < numUsersSeeder; i++) {
             users.push(createUserFactory())
         }
+
+        users.push(createUserFactory(athlete))
+        users.push(createUserFactory(coach))
 
         return this.collection.insertMany(users)
     }
@@ -30,36 +36,37 @@ export class UsersSeeder implements Seeder {
     }
 }
 
-const createUserFactory = () => {
-    const name = faker.name.firstName()
-    const surname = faker.name.lastName()
-    const email = faker.helpers.unique(faker.internet.email, [name, surname])
-    const username = faker.helpers.unique(faker.internet.userName, [
-        name,
-        surname,
-    ])
+const createUserFactory = ({
+    name = faker.name.firstName(),
+    surname = faker.name.lastName(),
+    email = faker.helpers.unique(faker.internet.email, [name, surname]),
+    username = faker.helpers.unique(faker.internet.userName, [name, surname]),
+    password = '$2b$10$a34kLHwgi5B0UeaPR1r3cuHqD0OSzdo7jzu3e3NTmb/C4lIZFLDsS',
+    role = [
+        UserRole.ATHLETE,
+        Math.random() > 0.5 ? UserRole.COACH : null,
+    ].filter(Boolean),
+    createdAt = faker.date.past(),
+    updatedAt = faker.date.between(createdAt, new Date()),
+    id = uuidv4(),
+}: Partial<IUser> = {}): UserEntity => ({
+    _id: id,
+    username,
+    password,
+    email,
+    role,
+    name,
+    surname,
+    createdAt,
+    updatedAt,
+})
 
-    // Admin1
-    const password =
-        '$2b$10$a34kLHwgi5B0UeaPR1r3cuHqD0OSzdo7jzu3e3NTmb/C4lIZFLDsS'
+export const athlete: Partial<IUser> = {
+    id: 'c3b95fa5-16c1-43ba-b1a1-32db64793f61',
+    email: 'usuario@usuario.com',
+}
 
-    const role = [UserRole.ATHLETE]
-    if (Math.random() > 0.5) {
-        role.push(UserRole.COACH)
-    }
-
-    const createdAt = faker.date.past()
-    const updatedAt = faker.date.between(createdAt, new Date())
-
-    return {
-        _id: uuidv4(),
-        username,
-        password,
-        email,
-        role,
-        name,
-        surname,
-        createdAt,
-        updatedAt,
-    }
+export const coach: Partial<IUser> = {
+    id: '36f99bf2-c8a6-4ac4-a233-c2ed6342be45',
+    email: 'coach@gmail.com',
 }

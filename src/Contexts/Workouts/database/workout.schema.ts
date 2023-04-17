@@ -27,7 +27,7 @@ export class WorkoutEntity extends BaseEntity {
     isSuccessful: boolean
 
     @Prop({ type: String, ref: 'UserEntity', required: true })
-    athelteId: string
+    athleteId: string
 
     @Prop({ type: String, ref: 'UserEntity', default: null })
     coachId?: string
