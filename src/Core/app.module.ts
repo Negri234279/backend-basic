@@ -1,3 +1,4 @@
+import { CommentsModule } from 'src/Contexts/Comments/comments.module'
 import { WorkoutsModule } from 'src/Contexts/Workouts/workouts.module'
 
 import { Module } from '@nestjs/common'
@@ -19,6 +20,7 @@ import { MongoModule } from './infrastructure/mongodb/mongo.module'
         MongoModule,
         UsersModule,
         WorkoutsModule,
+        CommentsModule,
     ],
     providers: [
         {

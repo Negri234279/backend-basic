@@ -5,6 +5,7 @@ import { coach } from 'src/Contexts/Users/database/users.seeder'
 import { Injectable } from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
 
+import { IWorkout } from '../workout.model'
 import { WorkoutEntity } from './workout.schema'
 import {
     getDateBetweenOfMonth,
@@ -25,62 +26,67 @@ export class WorkoutsSeeder implements Seeder {
 
         // Workouts random
         for (let i = 0; i < numWorkoutsSeeder; i++) {
-            const workout = workoutFactory()
+            const newWorkout = workoutFactory()
 
-            workouts.push(workout)
+            workouts.push(newWorkout)
         }
 
         for (let i = 0; i < numWorkoutsSeeder; i++) {
-            const workout = workoutFactory({ coachId: coach.id })
+            const newWorkout = workoutFactory({ coachId: coach.id })
 
-            workouts.push(workout)
+            workouts.push(newWorkout)
         }
 
         // Workouts random on the same day
         for (let i = 0; i < 6; i++) {
             const date = new Date(new Date().setHours(0, 0, 0, 0))
-            const workout = workoutFactory({ date })
+            const newWorkout = workoutFactory({ date })
 
-            workouts.push(workout)
+            workouts.push(newWorkout)
         }
 
         for (let i = 0; i < 6; i++) {
             const date = new Date(new Date().setHours(0, 0, 0, 0))
-            const workout = workoutFactory({ coachId: coach.id, date })
+            const newWorkout = workoutFactory({ coachId: coach.id, date })
 
-            workouts.push(workout)
+            workouts.push(newWorkout)
         }
+
+        const date = new Date(new Date().setHours(0, 0, 0, 0))
+        const newWorkout = workoutFactory({ id: workout.id, date })
+
+        workouts.push(newWorkout)
 
         // Workouts random on the same week
         for (let i = 0; i < 30; i++) {
-            const workout = workoutFactory({ date: getDateBetweenOfWeek() })
+            const newWorkout = workoutFactory({ date: getDateBetweenOfWeek() })
 
-            workouts.push(workout)
+            workouts.push(newWorkout)
         }
 
         for (let i = 0; i < 30; i++) {
-            const workout = workoutFactory({
+            const newWorkout = workoutFactory({
                 coachId: coach.id,
                 date: getDateBetweenOfWeek(),
             })
 
-            workouts.push(workout)
+            workouts.push(newWorkout)
         }
 
         // Workouts random on the same month
         for (let i = 0; i < 40; i++) {
-            const workout = workoutFactory({ date: getDateBetweenOfMonth() })
+            const newWorkout = workoutFactory({ date: getDateBetweenOfMonth() })
 
-            workouts.push(workout)
+            workouts.push(newWorkout)
         }
 
         for (let i = 0; i < 40; i++) {
-            const workout = workoutFactory({
+            const newWorkout = workoutFactory({
                 coachId: coach.id,
                 date: getDateBetweenOfMonth(),
             })
 
-            workouts.push(workout)
+            workouts.push(newWorkout)
         }
 
         return this.collection.insertMany(workouts)
@@ -89,4 +95,8 @@ export class WorkoutsSeeder implements Seeder {
     async drop(): Promise<any> {
         return this.collection.deleteMany({})
     }
+}
+
+export const workout: Partial<IWorkout> = {
+    id: '9c1d27dc-0118-4486-bfee-ab9513ac7940',
 }
