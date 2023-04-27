@@ -1,11 +1,7 @@
 import { UsersRepository } from 'src/Contexts/Users/database/users.repository'
 import { UserPayload } from 'src/Core/infrastructure/@types/userPayload'
 
-import {
-    ConflictException,
-    Injectable,
-    NotFoundException,
-} from '@nestjs/common'
+import { ConflictException, Injectable, NotFoundException } from '@nestjs/common'
 
 import { WorkoutsRepository } from '../database/workouts.repository'
 import { WorkoutModel } from '../workout.model'
@@ -23,10 +19,7 @@ export class WorkoutFindOneByAthleteService {
             throw new ConflictException()
         }
 
-        const workout = await this.workoutsRepository.findOneByAthelte(
-            user.id,
-            id,
-        )
+        const workout = await this.workoutsRepository.findOneByAthelte(user.id, id)
         if (!workout) {
             throw new NotFoundException()
         }

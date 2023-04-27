@@ -1,6 +1,6 @@
 import { UserModel } from '../user.model'
 
-export interface IUserRepository {
+export interface UserRepository {
     findOne(id: string): Promise<UserModel | null>
     findOneByEmail(email: string): Promise<UserModel | null>
     findOneByUsername(username: string): Promise<UserModel | null>

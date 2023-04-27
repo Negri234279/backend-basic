@@ -5,34 +5,31 @@ import { UserPayload } from 'src/Core/infrastructure/@types/userPayload'
 import { ConflictException, Injectable } from '@nestjs/common'
 
 import { CommentModel } from '../comment.model'
-import { CommentsRepository } from '../database/comment.repository'
 import { CreateCommentDto } from '../dtos/createComment.dto'
+import { CommentsRepository } from '../database/comments.repository'
 
 @Injectable()
 export class CommentCreateService {
     constructor(
         private readonly usersRepository: UsersRepository,
         private readonly workoutsRepository: WorkoutsRepository,
-        private readonly commentsRepository: CommentsRepository,
+        private readonly CommentRepository: CommentsRepository,
     ) {}
 
-    async execute(
-        user: UserPayload,
-        createDto: CreateCommentDto,
-    ): Promise<void> {
-        const { id, workouId } = createDto
+    async execute(user: UserPayload, createDto: CreateCommentDto): Promise<void> {
+        const { id, workout } = createDto
 
         const userExist = await this.usersRepository.exist(user.id)
         if (!userExist) {
             throw new ConflictException()
         }
 
-        const workoutExist = await this.workoutsRepository.exist(workouId)
+        const workoutExist = await this.workoutsRepository.exist(workout)
         if (!workoutExist) {
             throw new ConflictException()
         }
 
-        const commentExist = await this.commentsRepository.exist(id)
+        const commentExist = await this.CommentRepository.exist(id)
         if (commentExist) {
             throw new ConflictException()
         }
@@ -41,11 +38,11 @@ export class CommentCreateService {
 
         const newComment = new CommentModel({
             ...createDto,
-            authorId: user.id,
+            author: user.id,
             createdAt: newDate,
             updatedAt: newDate,
         })
 
-        await this.commentsRepository.save(newComment)
+        await this.CommentRepository.save(newComment)
     }
 }

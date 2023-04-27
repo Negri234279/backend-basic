@@ -5,13 +5,13 @@ import { coach } from 'src/Contexts/Users/database/users.seeder'
 import { Injectable } from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
 
-import { IWorkout } from '../workout.model'
 import { WorkoutEntity } from './workout.schema'
 import {
     getDateBetweenOfMonth,
     getDateBetweenOfWeek,
     workoutFactory,
 } from './workoutFactory.herper'
+import { Workout } from '../@types/workout'
 
 @Injectable()
 export class WorkoutsSeeder implements Seeder {
@@ -32,7 +32,7 @@ export class WorkoutsSeeder implements Seeder {
         }
 
         for (let i = 0; i < numWorkoutsSeeder; i++) {
-            const newWorkout = workoutFactory({ coachId: coach.id })
+            const newWorkout = workoutFactory({ coach: coach.id })
 
             workouts.push(newWorkout)
         }
@@ -47,7 +47,7 @@ export class WorkoutsSeeder implements Seeder {
 
         for (let i = 0; i < 6; i++) {
             const date = new Date(new Date().setHours(0, 0, 0, 0))
-            const newWorkout = workoutFactory({ coachId: coach.id, date })
+            const newWorkout = workoutFactory({ coach: coach.id, date })
 
             workouts.push(newWorkout)
         }
@@ -66,7 +66,7 @@ export class WorkoutsSeeder implements Seeder {
 
         for (let i = 0; i < 30; i++) {
             const newWorkout = workoutFactory({
-                coachId: coach.id,
+                coach: coach.id,
                 date: getDateBetweenOfWeek(),
             })
 
@@ -82,7 +82,7 @@ export class WorkoutsSeeder implements Seeder {
 
         for (let i = 0; i < 40; i++) {
             const newWorkout = workoutFactory({
-                coachId: coach.id,
+                coach: coach.id,
                 date: getDateBetweenOfMonth(),
             })
 
@@ -97,6 +97,6 @@ export class WorkoutsSeeder implements Seeder {
     }
 }
 
-export const workout: Partial<IWorkout> = {
+export const workout: Partial<Workout> = {
     id: '9c1d27dc-0118-4486-bfee-ab9513ac7940',
 }

@@ -1,6 +1,8 @@
-import { IUserProfile } from 'src/Contexts/Users/user'
-import { IComment } from './comment'
+import { AthleteProfile, CoachProfile } from 'src/Contexts/Users/@types/user'
+import { UserModel } from 'src/Contexts/Users/user.model'
 
-export interface CommentWithUser extends Omit<IComment, 'authorId'> {
-    authorId: IUserProfile
+import { Comment } from './comment'
+
+export interface CommentWithUser extends Omit<Comment, 'author'> {
+    author: UserModel | AthleteProfile | CoachProfile
 }

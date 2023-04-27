@@ -15,10 +15,7 @@ export class CommentCreateController {
 
     @Post()
     @Roles(UserRole.ATHLETE, UserRole.COACH)
-    async execute(
-        @Req() req: ReqPayload,
-        @Body() body: CreateCommentDto,
-    ): Promise<void> {
+    async execute(@Req() req: ReqPayload, @Body() body: CreateCommentDto): Promise<void> {
         await this.commentCreateService.execute(req.user, body)
     }
 }

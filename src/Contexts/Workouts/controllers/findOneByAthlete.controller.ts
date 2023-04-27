@@ -12,16 +12,11 @@ import { WorkoutModel } from '../workout.model'
 @ApiTags('Workouts')
 @Controller('workouts')
 export class WorkoutFindOneByAthleteController {
-    constructor(
-        private readonly workoutFindOneByAthleteService: WorkoutFindOneByAthleteService,
-    ) {}
+    constructor(private readonly workoutFindOneByAthleteService: WorkoutFindOneByAthleteService) {}
 
     @Get(':id')
     @Roles(UserRole.ATHLETE)
-    async execute(
-        @Req() req: ReqPayload,
-        @Param() { id }: IdDto,
-    ): Promise<WorkoutModel> {
+    async execute(@Req() req: ReqPayload, @Param() { id }: IdDto): Promise<WorkoutModel> {
         return await this.workoutFindOneByAthleteService.execute(req.user, id)
     }
 }

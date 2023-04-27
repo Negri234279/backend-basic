@@ -1,10 +1,5 @@
 import { Controller, Post, Req, UseGuards } from '@nestjs/common'
-import {
-    ApiBody,
-    ApiCreatedResponse,
-    ApiOperation,
-    ApiTags,
-} from '@nestjs/swagger'
+import { ApiBody, ApiCreatedResponse, ApiOperation, ApiTags } from '@nestjs/swagger'
 import { ReqPayload } from 'src/Core/infrastructure/@types/express'
 import { AccessToken } from 'src/Core/infrastructure/@types/userPayload'
 import { Public } from 'src/Core/infrastructure/decorators/public.decorator'

@@ -30,6 +30,14 @@ export class UserEntity extends BaseEntity {
 
     @Prop({ type: String, ref: 'UserEntity', default: null })
     coach?: string
+
+    @Prop({
+        type: [String],
+        ref: 'UserEntity',
+        default: [],
+        required: false,
+    })
+    athleteRequests?: string[]
 }
 
 export type UserDocument = HydratedDocument<UserEntity>

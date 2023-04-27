@@ -16,5 +16,5 @@ export class CreateCommentDto {
     @ApiProperty({ type: 'string', format: 'uuid' })
     @IsUUID()
     @IsNotEmpty()
-    workouId: string
+    workout: string
 }

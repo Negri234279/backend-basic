@@ -28,7 +28,7 @@ export class WorkoutDeleteService {
             throw new NotFoundException()
         }
 
-        if (workoutExist.coachId) {
+        if (workoutExist.coach) {
             throw new ForbiddenException()
         }
 

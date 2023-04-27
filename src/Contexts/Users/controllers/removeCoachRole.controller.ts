@@ -3,12 +3,7 @@ import { AccessToken } from 'src/Core/infrastructure/@types/userPayload'
 import { Roles } from 'src/Core/infrastructure/decorators/roles.decorator'
 
 import { Controller, Patch, Req } from '@nestjs/common'
-import {
-    ApiBearerAuth,
-    ApiOkResponse,
-    ApiOperation,
-    ApiTags,
-} from '@nestjs/swagger'
+import { ApiBearerAuth, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger'
 
 import { AccessTokenDto } from '../dtos/accessTokenDto'
 import { JwtProvider } from '../providers/jwt.service'
@@ -26,8 +21,7 @@ export class UserRemoveCoachRoleController {
     @ApiBearerAuth()
     @ApiOperation({
         summary: 'Become an athlete',
-        description:
-            'Update the users role to athlete and return a new access token.',
+        description: 'Update the users role to athlete and return a new access token.',
     })
     @ApiOkResponse({
         type: AccessTokenDto,

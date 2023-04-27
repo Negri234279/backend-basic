@@ -1,8 +1,7 @@
-import { athlete } from 'src/Contexts/Users/database/users.seeder'
-
 import { faker } from '@faker-js/faker'
+import { athlete as userAthlete } from 'src/Contexts/Users/database/users.seeder'
 
-import { IWorkout } from '../workout.model'
+import { Workout } from '../@types/workout'
 import { WorkoutEntity } from './workout.schema'
 
 export const workoutFactory = ({
@@ -14,11 +13,11 @@ export const workoutFactory = ({
     date = faker.date.recent(),
     isCompleted = faker.datatype.boolean(),
     isSuccessful = faker.datatype.boolean(),
-    athleteId = athlete.id,
-    coachId = null,
+    athlete = userAthlete.id,
+    coach = null,
     createdAt = faker.date.past(),
     updatedAt = faker.date.between(createdAt, new Date()),
-}: Partial<IWorkout> = {}): WorkoutEntity => {
+}: Partial<Workout> = {}): WorkoutEntity => {
     return {
         _id: id,
         name,
@@ -28,8 +27,8 @@ export const workoutFactory = ({
         date,
         isCompleted,
         isSuccessful,
-        athleteId,
-        coachId,
+        athlete,
+        coach,
         createdAt,
         updatedAt,
     }
@@ -65,17 +64,13 @@ export const randomWeight = ({
 }
 
 export const getDateBetweenOfWeek = (): Date => {
-    const date = faker.date
-        .between(getFirstDayOfWeek(), getLastDayOfWeek())
-        .setHours(0, 0, 0, 0)
+    const date = faker.date.between(getFirstDayOfWeek(), getLastDayOfWeek()).setHours(0, 0, 0, 0)
 
     return new Date(date)
 }
 
 export const getDateBetweenOfMonth = (): Date => {
-    const date = faker.date
-        .between(getFirstDayOfMonth(), getLastDayOfMonth())
-        .setHours(0, 0, 0, 0)
+    const date = faker.date.between(getFirstDayOfMonth(), getLastDayOfMonth()).setHours(0, 0, 0, 0)
 
     return new Date(date)
 }
@@ -86,11 +81,7 @@ const getFirstDayOfWeek = () => {
     const diff = actualDate.getDate() - day + (day === 0 ? -6 : 1)
     const firstDay = new Date(actualDate.setDate(diff))
 
-    return new Date(
-        firstDay.getFullYear(),
-        firstDay.getMonth(),
-        firstDay.getDate(),
-    )
+    return new Date(firstDay.getFullYear(), firstDay.getMonth(), firstDay.getDate())
 }
 
 const getLastDayOfWeek = () => {

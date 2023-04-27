@@ -1,18 +1,20 @@
-export class WorkoutModel {
+import { Workout } from './@types/workout'
+
+export class WorkoutModel implements Workout {
     public id: string
     public name: string
     public sets: number
     public reps: number
     public weight: number
     public date: Date
-    public isCompleted: boolean
+    public isCompleted: boolean | null
     public isSuccessful: boolean | null
-    public athleteId: string
-    public coachId: string | null
+    public athlete: string
+    public coach: string | null
     public createdAt: Date
     public updatedAt: Date
 
-    constructor(props: IWorkout) {
+    constructor(props: Workout) {
         this.id = props.id
         this.name = props.name
         this.sets = props.sets
@@ -21,24 +23,9 @@ export class WorkoutModel {
         this.date = props.date
         this.isCompleted = props.isCompleted
         this.isSuccessful = props.isSuccessful
-        this.athleteId = props.athleteId
-        this.coachId = props.coachId
+        this.athlete = props.athlete
+        this.coach = props.coach
         this.createdAt = props.createdAt
         this.updatedAt = props.updatedAt
     }
-}
-
-export interface IWorkout {
-    id: string
-    name: string
-    sets: number
-    reps: number
-    weight: number
-    date: Date
-    isCompleted: boolean
-    isSuccessful: boolean | null
-    athleteId: string
-    coachId: string | null
-    createdAt: Date
-    updatedAt: Date
 }

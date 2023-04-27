@@ -16,10 +16,7 @@ export class WorkoutDeleteController {
     @HttpCode(204)
     @Delete(':id')
     @Roles(UserRole.ATHLETE)
-    async execute(
-        @Req() req: ReqPayload,
-        @Param() { id }: IdDto,
-    ): Promise<void> {
+    async execute(@Req() req: ReqPayload, @Param() { id }: IdDto): Promise<void> {
         await this.workoutDeleteService.execute(req.user, id)
     }
 }

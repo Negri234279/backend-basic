@@ -6,14 +6,12 @@ import { InjectModel } from '@nestjs/mongoose'
 
 import { UserModel } from '../user.model'
 import { UserRole } from '../userRole'
-import { IUserRepository } from './user.repository'
+import { UserRepository } from '../@types/user.repository'
 import { UserEntity } from './user.schema'
 
 @Injectable()
-export class UsersRepository implements IUserRepository {
-    constructor(
-        @InjectModel(UserEntity.name) private collection: Model<UserEntity>,
-    ) {}
+export class UsersRepository implements UserRepository {
+    constructor(@InjectModel(UserEntity.name) private collection: Model<UserEntity>) {}
 
     async exist(id: string): Promise<boolean> {
         return !!(await this.collection.countDocuments({ _id: id }).exec())
@@ -29,10 +27,7 @@ export class UsersRepository implements IUserRepository {
     }
 
     async findOneByEmail(email: string): Promise<UserModel | null> {
-        const userEntity = await this.collection
-            .findOne({ email })
-            .lean()
-            .exec()
+        const userEntity = await this.collection.findOne({ email }).lean().exec()
         if (!userEntity) {
             return null
         }
@@ -41,10 +36,7 @@ export class UsersRepository implements IUserRepository {
     }
 
     async findOneByUsername(username: string): Promise<UserModel | null> {
-        const userEntity = await this.collection
-            .findOne({ username })
-            .lean()
-            .exec()
+        const userEntity = await this.collection.findOne({ username }).lean().exec()
         if (!userEntity) {
             return null
         }
@@ -96,6 +88,7 @@ export class UsersRepository implements IUserRepository {
         userEntity.surname = user.surname
         userEntity.role = user.role
         userEntity.coach = user.coach
+        userEntity.athleteRequests = user.athleteRequests
         userEntity.createdAt = user.createdAt
         userEntity.updatedAt = user.updatedAt
 
@@ -103,17 +96,8 @@ export class UsersRepository implements IUserRepository {
     }
 
     private toDomain(userEntity: UserEntity): UserModel {
-        return new UserModel(
-            userEntity._id,
-            userEntity.username,
-            userEntity.password,
-            userEntity.email,
-            userEntity.name,
-            userEntity.surname,
-            userEntity.role,
-            userEntity.createdAt,
-            userEntity.updatedAt,
-            userEntity.coach,
-        )
+        const { _id: id, ...restUser } = userEntity
+
+        return new UserModel({ ...restUser, id })
     }
 }

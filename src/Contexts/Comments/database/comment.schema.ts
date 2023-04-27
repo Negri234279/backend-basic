@@ -10,10 +10,10 @@ export class CommentEntity extends BaseEntity {
     text: string
 
     @Prop({ type: String, ref: 'UserEntity', required: true })
-    authorId: string | UserEntity
+    author: string | UserEntity
 
     @Prop({ type: String, ref: 'WorkoutEntity', required: true })
-    workouId: string
+    workout: string
 }
 
 export type CommentDocument = HydratedDocument<CommentEntity>

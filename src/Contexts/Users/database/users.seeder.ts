@@ -6,7 +6,7 @@ import { faker } from '@faker-js/faker'
 import { Injectable } from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
 
-import { IUser } from '../user'
+import { User } from '../@types/user'
 import { UserRole } from '../userRole'
 import { UserEntity } from './user.schema'
 
@@ -25,7 +25,7 @@ export class UsersSeeder implements Seeder {
             users.push(createUserFactory())
         }
 
-        users.push(createUserFactory(athlete))
+        users.push(createUserFactory({ ...athlete, coach: coach.id }))
         users.push(createUserFactory(coach))
 
         return this.collection.insertMany(users)
@@ -37,19 +37,18 @@ export class UsersSeeder implements Seeder {
 }
 
 const createUserFactory = ({
+    id = uuidv4(),
     name = faker.name.firstName(),
     surname = faker.name.lastName(),
     email = faker.helpers.unique(faker.internet.email, [name, surname]),
     username = faker.helpers.unique(faker.internet.userName, [name, surname]),
     password = '$2b$10$a34kLHwgi5B0UeaPR1r3cuHqD0OSzdo7jzu3e3NTmb/C4lIZFLDsS',
-    role = [
-        UserRole.ATHLETE,
-        Math.random() > 0.5 ? UserRole.COACH : null,
-    ].filter(Boolean),
+    role = [UserRole.ATHLETE, Math.random() > 0.5 ? UserRole.COACH : null].filter(Boolean),
+    coach = null,
+    athleteRequests = [],
     createdAt = faker.date.past(),
     updatedAt = faker.date.between(createdAt, new Date()),
-    id = uuidv4(),
-}: Partial<IUser> = {}): UserEntity => ({
+}: Partial<User> = {}): UserEntity => ({
     _id: id,
     username,
     password,
@@ -57,16 +56,18 @@ const createUserFactory = ({
     role,
     name,
     surname,
+    coach,
+    athleteRequests,
     createdAt,
     updatedAt,
 })
 
-export const athlete: Partial<IUser> = {
+export const athlete: Partial<User> = {
     id: 'c3b95fa5-16c1-43ba-b1a1-32db64793f61',
-    email: 'usuario@usuario.com',
+    email: 'usuario@gmail.com',
 }
 
-export const coach: Partial<IUser> = {
+export const coach: Partial<User> = {
     id: '36f99bf2-c8a6-4ac4-a233-c2ed6342be45',
     email: 'coach@gmail.com',
 }

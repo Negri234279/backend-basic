@@ -1,8 +1,4 @@
-import {
-    ConflictException,
-    ForbiddenException,
-    Injectable,
-} from '@nestjs/common'
+import { ConflictException, ForbiddenException, Injectable } from '@nestjs/common'
 
 import { UsersRepository } from '../database/users.repository'
 import { UserModel } from '../user.model'

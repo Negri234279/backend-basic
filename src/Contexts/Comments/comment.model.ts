@@ -1,20 +1,20 @@
-import { IUserProfile } from '../Users/user'
+import { AthleteProfile, CoachProfile } from '../Users/@types/user'
 import { UserModel } from '../Users/user.model'
-import { IComment } from './@types/comment'
+import { Comment } from './@types/comment'
 
-export class CommentModel {
+export class CommentModel implements Comment {
     public id: string
     public text: string
-    public authorId: string | UserModel | IUserProfile
-    public workouId: string
+    public author: string | UserModel | AthleteProfile | CoachProfile
+    public workout: string
     public createdAt: Date
     public updatedAt: Date
 
-    constructor(props: IComment) {
+    constructor(props: Comment) {
         this.id = props.id
         this.text = props.text
-        this.authorId = props.authorId
-        this.workouId = props.workouId
+        this.author = props.author
+        this.workout = props.workout
         this.createdAt = props.createdAt
         this.updatedAt = props.updatedAt
     }

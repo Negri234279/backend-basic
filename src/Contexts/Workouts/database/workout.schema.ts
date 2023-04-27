@@ -20,17 +20,17 @@ export class WorkoutEntity extends BaseEntity {
     @Prop({ required: true })
     date: Date
 
-    @Prop({ required: true, default: false })
+    @Prop({ required: true, default: null })
     isCompleted: boolean
 
     @Prop({ default: null })
     isSuccessful: boolean
 
     @Prop({ type: String, ref: 'UserEntity', required: true })
-    athleteId: string
+    athlete: string
 
     @Prop({ type: String, ref: 'UserEntity', default: null })
-    coachId?: string
+    coach?: string
 }
 
 export type WorkoutDocument = HydratedDocument<WorkoutEntity>

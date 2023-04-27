@@ -1,52 +1,59 @@
+import { UnauthorizedException } from '@nestjs/common'
 import * as bcrypt from 'bcrypt'
 import { UserPayload } from 'src/Core/infrastructure/@types/userPayload'
 
-import { Coach, IUser, IUserProfile } from './user'
+import { AthleteProfile, CoachProfile, User, UserProfile } from './@types/user'
 import { UserRole } from './userRole'
-import { UnauthorizedException } from '@nestjs/common'
 
-export class UserModel implements IUser {
+export class UserModel implements User {
+    public id: string
+    public username: string
+    public password: string
+    public email: string
+    public name: string
+    public surname: string
+    public role: UserRole[]
+    public coach?: string
+    public athleteRequests?: string[]
+    public createdAt: Date
+    public updatedAt: Date
     private static salt = 10
 
-    constructor(
-        public id: string,
-        public username: string,
-        public password: string,
-        public email: string,
-        public name: string,
-        public surname: string,
-        public role: UserRole[],
-        public createdAt: Date,
-        public updatedAt: Date,
-        public coach?: string,
-    ) {}
+    constructor(props: User) {
+        this.id = props.id
+        this.username = props.username
+        this.password = props.password
+        this.email = props.email
+        this.name = props.name
+        this.surname = props.surname
+        this.role = props.role
+        this.coach = props.coach
+        this.athleteRequests = props.athleteRequests
+        this.createdAt = props.createdAt
+        this.updatedAt = props.updatedAt
+    }
 
-    public static create(
-        id: string,
-        username: string,
-        password: string,
-        email: string,
-        name: string,
-        surname: string,
-    ): UserModel {
+    public static create({
+        id,
+        username,
+        password,
+        email,
+        name,
+        surname,
+    }: Partial<User>): UserModel {
         const newDate = new Date()
 
-        return new UserModel(
+        return new UserModel({
             id,
             username,
             password,
             email,
             name,
             surname,
-            [UserRole.ATHLETE],
-            newDate,
-            newDate,
-        )
-    }
-
-    public toProfile(): IUserProfile {
-        const { id: _id, coach: _co, password: _pa, ...rest } = this
-        return rest
+            role: [UserRole.ATHLETE],
+            createdAt: newDate,
+            updatedAt: newDate,
+        })
     }
 
     public toPayload(): UserPayload {
@@ -54,7 +61,26 @@ export class UserModel implements IUser {
         return { id, username, email, role }
     }
 
-    public toCoachProfile(): Coach {
+    public toUserProfile(): UserProfile {
+        const { username, email, name, surname, role, createdAt, updatedAt } = this
+
+        return {
+            username,
+            email,
+            name,
+            surname,
+            role,
+            createdAt,
+            updatedAt,
+        }
+    }
+
+    public toAthleteProfile(): AthleteProfile {
+        const { id, name, surname, username } = this
+        return { id, name, surname, username }
+    }
+
+    public toCoachProfile(): CoachProfile {
         const { id, name, surname, username } = this
         return { id, name, surname, username }
     }
