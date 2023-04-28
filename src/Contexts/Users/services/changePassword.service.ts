@@ -7,10 +7,7 @@ import { ChangePasswordDto } from '../dtos'
 export class UserChangePasswordService {
     constructor(private readonly usersRepository: UsersRepository) {}
 
-    async execute(
-        id: string,
-        changePasswordDto: ChangePasswordDto,
-    ): Promise<void> {
+    async execute(id: string, changePasswordDto: ChangePasswordDto): Promise<void> {
         const { currentPassword, newPassword } = changePasswordDto
         if (currentPassword === newPassword) {
             throw new ConflictException()

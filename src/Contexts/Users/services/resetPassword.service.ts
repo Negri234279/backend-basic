@@ -1,8 +1,4 @@
-import {
-    ConflictException,
-    Injectable,
-    UnauthorizedException,
-} from '@nestjs/common'
+import { ConflictException, Injectable, UnauthorizedException } from '@nestjs/common'
 
 import { UsersRepository } from '../database/users.repository'
 import { ResetPasswordDto } from '../dtos'

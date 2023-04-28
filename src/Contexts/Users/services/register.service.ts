@@ -16,29 +16,22 @@ export class UserRegisterService {
             throw new ConflictException()
         }
 
-        const existUserByEmail = await this.usersRepository.findOneByEmail(
-            email,
-        )
+        const existUserByEmail = await this.usersRepository.findOneByEmail(email)
         if (existUserByEmail) {
             throw new ConflictException()
         }
 
-        const existUserByUsername =
-            await this.usersRepository.findOneByUsername(username)
+        const existUserByUsername = await this.usersRepository.findOneByUsername(username)
         if (existUserByUsername) {
             throw new ConflictException()
         }
 
         const hashedPassword = await UserModel.hashPassword(password)
 
-        const user = UserModel.create(
-            id,
-            username,
-            hashedPassword,
-            email,
-            registerDto.name,
-            registerDto.surname,
-        )
+        const user = UserModel.create({
+            ...registerDto,
+            password: hashedPassword,
+        })
 
         await this.usersRepository.save(user)
     }

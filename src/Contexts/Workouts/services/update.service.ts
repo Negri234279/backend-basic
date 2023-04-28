@@ -1,11 +1,7 @@
 import { UsersRepository } from 'src/Contexts/Users/database/users.repository'
 import { UserPayload } from 'src/Core/infrastructure/@types/userPayload'
 
-import {
-    ConflictException,
-    Injectable,
-    NotFoundException,
-} from '@nestjs/common'
+import { ConflictException, Injectable, NotFoundException } from '@nestjs/common'
 
 import { WorkoutsRepository } from '../database/workouts.repository'
 import { UpdateworkoutDto } from '../dtos/updateWorkout.dto'
@@ -18,11 +14,7 @@ export class WorkoutUpdateService {
         private readonly usersRepository: UsersRepository,
     ) {}
 
-    async execute(
-        user: UserPayload,
-        id: string,
-        updateDto: UpdateworkoutDto,
-    ): Promise<void> {
+    async execute(user: UserPayload, id: string, updateDto: UpdateworkoutDto): Promise<void> {
         const userExist = await this.usersRepository.exist(user.id)
         if (!userExist) {
             new ConflictException()

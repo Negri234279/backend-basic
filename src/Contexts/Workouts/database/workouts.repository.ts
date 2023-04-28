@@ -1,13 +1,13 @@
-import { Model } from 'mongoose'
-
 import { Injectable } from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
+import { Model } from 'mongoose'
 
+import { WorkoutRepository } from '../@types/workout.repository'
 import { WorkoutModel } from '../workout.model'
 import { WorkoutEntity } from './workout.schema'
 
 @Injectable()
-export class WorkoutsRepository {
+export class WorkoutsRepository implements WorkoutRepository {
     constructor(
         @InjectModel(WorkoutEntity.name)
         private readonly collection: Model<WorkoutEntity>,
@@ -26,14 +26,11 @@ export class WorkoutsRepository {
         return this.toDomain(workoutEntity)
     }
 
-    async findOneByAthelte(
-        athelteId: string,
-        id: string,
-    ): Promise<WorkoutModel | null> {
+    async findOneByAthelte(athlete: string, id: string): Promise<WorkoutModel | null> {
         const workoutEntity = await this.collection
             .findOne({
                 _id: id,
-                athelteId,
+                athlete,
             })
             .lean()
             .exec()
@@ -47,7 +44,7 @@ export class WorkoutsRepository {
     async findByAthelte(id: string): Promise<WorkoutModel[]> {
         const workoutEntity = await this.collection
             .find({
-                $and: [{ athelteId: id }, { coachId: null }],
+                $and: [{ athlete: id }, { coach: null }],
             })
             .lean()
             .exec()
@@ -84,8 +81,8 @@ export class WorkoutsRepository {
         workoutEntity.date = workoutModel.date
         workoutEntity.isCompleted = workoutModel.isCompleted
         workoutEntity.isSuccessful = workoutModel.isSuccessful
-        workoutEntity.athelteId = workoutModel.athleteId
-        workoutEntity.coachId = workoutModel.coachId
+        workoutEntity.athlete = workoutModel.athlete
+        workoutEntity.coach = workoutModel.coach
         workoutEntity.createdAt = workoutModel.createdAt
         workoutEntity.updatedAt = workoutModel.updatedAt
 
@@ -93,19 +90,14 @@ export class WorkoutsRepository {
     }
 
     private toDomain(workoutEntity: WorkoutEntity): WorkoutModel {
+        const { _id: id, isCompleted, isSuccessful, coach } = workoutEntity
+
         return new WorkoutModel({
-            id: workoutEntity._id,
-            name: workoutEntity.name,
-            sets: workoutEntity.sets,
-            reps: workoutEntity.reps,
-            weight: workoutEntity.weight,
-            date: workoutEntity.date,
-            isCompleted: workoutEntity.isCompleted,
-            isSuccessful: workoutEntity.isSuccessful,
-            athleteId: workoutEntity.athelteId,
-            coachId: workoutEntity.coachId,
-            createdAt: workoutEntity.createdAt,
-            updatedAt: workoutEntity.updatedAt,
+            ...workoutEntity,
+            id,
+            isCompleted,
+            isSuccessful,
+            coach,
         })
     }
 }

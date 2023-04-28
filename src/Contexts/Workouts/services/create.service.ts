@@ -14,10 +14,7 @@ export class WorkoutCreateService {
         private readonly usersRepository: UsersRepository,
     ) {}
 
-    async execute(
-        user: UserPayload,
-        createDto: CreateWorkoutDto,
-    ): Promise<void> {
+    async execute(user: UserPayload, createDto: CreateWorkoutDto): Promise<void> {
         const userExist = await this.usersRepository.exist(user.id)
         if (!userExist) {
             throw new ConflictException()
@@ -34,8 +31,8 @@ export class WorkoutCreateService {
             ...createDto,
             isCompleted: createDto?.isCompleted,
             isSuccessful: createDto?.isSuccessful,
-            athleteId: user.id,
-            coachId: createDto?.coachId,
+            athlete: user.id,
+            coach: createDto?.coach,
             createdAt: newDate,
             updatedAt: newDate,
         })

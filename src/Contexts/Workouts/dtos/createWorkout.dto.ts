@@ -54,10 +54,10 @@ export class CreateWorkoutDto {
     @ApiProperty({ type: 'string', format: 'uuid' })
     @IsUUID()
     @IsNotEmpty()
-    athleteId: string
+    athlete: string
 
     @ApiProperty({ type: 'string', format: 'uuid' })
     @IsUUID()
     @IsOptional()
-    coachId?: string
+    coach?: string
 }

@@ -1,9 +1,6 @@
 import { Injectable } from '@nestjs/common'
 import { JwtService } from '@nestjs/jwt'
-import {
-    AccessToken,
-    UserPayload,
-} from 'src/Core/infrastructure/@types/userPayload'
+import { AccessToken, UserPayload } from 'src/Core/infrastructure/@types/userPayload'
 
 @Injectable()
 export class JwtProvider {

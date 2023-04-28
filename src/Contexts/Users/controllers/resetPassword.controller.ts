@@ -8,9 +8,7 @@ import { UserResetPasswordService } from '../services/resetPassword.service'
 @ApiTags('Users')
 @Controller('users')
 export class UserResetPasswordController {
-    constructor(
-        private readonly userResetPasswordService: UserResetPasswordService,
-    ) {}
+    constructor(private readonly userResetPasswordService: UserResetPasswordService) {}
 
     @Patch('reset-password')
     @ApiBearerAuth()
@@ -20,10 +18,7 @@ export class UserResetPasswordController {
             'Reset the password for the specified user and send the new password by email.',
     })
     @ApiBody({ type: ResetPasswordDto })
-    async execute(
-        @Req() req: ReqPayload,
-        @Body() body: ResetPasswordDto,
-    ): Promise<string> {
+    async execute(@Req() req: ReqPayload, @Body() body: ResetPasswordDto): Promise<string> {
         return await this.userResetPasswordService.execute(req.user.id, body)
     }
 }

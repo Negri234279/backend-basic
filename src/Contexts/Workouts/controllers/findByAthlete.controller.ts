@@ -11,16 +11,12 @@ import { WorkoutModel } from '../workout.model'
 @ApiTags('Workouts')
 @Controller('workouts')
 export class WorkoutFindByAthleteController {
-    constructor(
-        private readonly workoutFindByAthleteService: WorkoutFindByAthleteService,
-    ) {}
+    constructor(private readonly workoutFindByAthleteService: WorkoutFindByAthleteService) {}
 
     @Get()
     @Roles(UserRole.ATHLETE)
     async execute(@Req() req: ReqPayload): Promise<WorkoutModel[]> {
-        const workouts = await this.workoutFindByAthleteService.execute(
-            req.user,
-        )
+        const workouts = await this.workoutFindByAthleteService.execute(req.user)
         if (!workouts.length) {
             throw new HttpException('No workouts found', 204)
         }

@@ -1,9 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger'
 
 import { UserRole } from '../userRole'
-import { IUserProfile } from '../user'
 
-export class ProfileDto implements IUserProfile {
+export class ProfileDto {
     @ApiProperty()
     username: string
 

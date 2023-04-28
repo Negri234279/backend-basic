@@ -22,5 +22,6 @@ import { WorkoutServices } from './services'
         },
     ],
     controllers: [...WorkoutControllers],
+    exports: [WorkoutsDbModule, WorkoutsRepository],
 })
 export class WorkoutsModule {}

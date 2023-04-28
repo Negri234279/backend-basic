@@ -20,9 +20,7 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
         const errors = await validate(loginDto)
 
         if (errors.length) {
-            const message = errors
-                .map(({ constraints }) => Object.values(constraints))
-                .flat()
+            const message = errors.map(({ constraints }) => Object.values(constraints)).flat()
 
             throw new BadRequestException({
                 statusCode: 400,

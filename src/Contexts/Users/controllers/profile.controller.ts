@@ -1,14 +1,9 @@
 import { Controller, Get, Req } from '@nestjs/common'
-import {
-    ApiBearerAuth,
-    ApiOkResponse,
-    ApiOperation,
-    ApiTags,
-} from '@nestjs/swagger'
+import { ApiBearerAuth, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger'
 import { ReqPayload } from 'src/Core/infrastructure/@types/express'
 
 import { UserProfileService } from '../services/profile.service'
-import { IUserProfile } from '../user'
+import { UserProfile } from '../@types/user'
 import { ProfileDto } from '../dtos/profileDto'
 
 @ApiTags('Users')
@@ -24,9 +19,9 @@ export class UserProfileController {
     })
     @ApiBearerAuth()
     @ApiOkResponse({ type: ProfileDto })
-    async execute(@Req() req: ReqPayload): Promise<IUserProfile> {
+    async execute(@Req() req: ReqPayload): Promise<UserProfile> {
         const user = await this.userProfileService.execute(req.user.id)
 
-        return user.toProfile()
+        return user.toUserProfile()
     }
 }

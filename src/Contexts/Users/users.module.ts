@@ -11,12 +11,7 @@ import { LocalStrategy } from './strategies/local.strategy'
 
 @Module({
     imports: [JwtGlobalModule, UsersDbModule],
-    providers: [
-        ...UserServices,
-        ...UserProviders,
-        UsersRepository,
-        LocalStrategy,
-    ],
+    providers: [...UserServices, ...UserProviders, UsersRepository, LocalStrategy],
     controllers: [...UserControllers],
     exports: [UsersRepository, UsersDbModule],
 })

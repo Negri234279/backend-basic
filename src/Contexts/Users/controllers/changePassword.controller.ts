@@ -8,9 +8,7 @@ import { UserChangePasswordService } from '../services/changePassword.service'
 @ApiTags('Users')
 @Controller('users')
 export class UserChangePasswordController {
-    constructor(
-        private readonly userChangePasswordService: UserChangePasswordService,
-    ) {}
+    constructor(private readonly userChangePasswordService: UserChangePasswordService) {}
 
     @HttpCode(204)
     @Patch('change-password')
@@ -20,10 +18,7 @@ export class UserChangePasswordController {
         description: 'Updates the password of the authenticated user',
     })
     @ApiBody({ type: ChangePasswordDto })
-    async execute(
-        @Req() req: ReqPayload,
-        @Body() body: ChangePasswordDto,
-    ): Promise<void> {
+    async execute(@Req() req: ReqPayload, @Body() body: ChangePasswordDto): Promise<void> {
         await this.userChangePasswordService.execute(req.user.id, body)
     }
 }
