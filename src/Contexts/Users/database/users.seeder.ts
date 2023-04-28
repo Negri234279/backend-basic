@@ -26,7 +26,7 @@ export class UsersSeeder implements Seeder {
         }
 
         users.push(createUserFactory({ ...athlete, coach: coach.id }))
-        users.push(createUserFactory(coach))
+        users.push(createUserFactory({ ...coach }))
 
         return this.collection.insertMany(users)
     }
