@@ -1,4 +1,4 @@
-import { UserRole } from 'src/Contexts/Users/userRole'
+import { UserRole } from 'src/Contexts/Users/shared/userRole'
 import { ReqPayload } from 'src/Core/infrastructure/@types/express'
 import { Roles } from 'src/Core/infrastructure/decorators/roles.decorator'
 import { IdDto } from 'src/Core/infrastructure/dtos/id.dto'

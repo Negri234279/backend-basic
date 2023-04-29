@@ -1,4 +1,4 @@
-import { UsersRepository } from 'src/Contexts/Users/database/users.repository'
+import { UsersRepository } from 'src/Contexts/Users/shared/database/users.repository'
 import { UserPayload } from 'src/Core/infrastructure/@types/userPayload'
 
 import { ConflictException, Injectable } from '@nestjs/common'

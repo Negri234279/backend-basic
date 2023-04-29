@@ -1,13 +1,13 @@
 import { Controller, Get, HttpException, Param, Req } from '@nestjs/common'
 import { ApiTags } from '@nestjs/swagger'
-import { UserModel } from 'src/Contexts/Users/user.model'
-import { UserRole } from 'src/Contexts/Users/userRole'
+import { UserRole } from 'src/Contexts/Users/shared/userRole'
 import { ReqPayload } from 'src/Core/infrastructure/@types/express'
 import { Roles } from 'src/Core/infrastructure/decorators/roles.decorator'
 import { IdDto } from 'src/Core/infrastructure/dtos/id.dto'
 
 import { CommentWithUser } from '../@types/commentWithUser'
 import { CommentFindByWorkoutService } from '../services/findByWorkout.service'
+import { UserModel } from 'src/Contexts/Users/shared/user.model'
 
 @ApiTags('Comments')
 @Controller('comments')

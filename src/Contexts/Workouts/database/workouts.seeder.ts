@@ -1,6 +1,6 @@
 import { Model } from 'mongoose'
 import { Seeder } from 'nestjs-seeder'
-import { coach } from 'src/Contexts/Users/database/users.seeder'
+import { coach } from 'src/Contexts/Users/shared/database/users.seeder'
 
 import { Injectable } from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'

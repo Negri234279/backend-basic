@@ -1,4 +1,4 @@
-import { AthleteProfile, CoachProfile } from 'src/Contexts/Users/@types/user'
+import { AthleteProfile, CoachProfile } from 'src/Contexts/Users/shared/@types/user'
 import { UserModel } from 'src/Contexts/Users/user.model'
 
 export interface Comment {
