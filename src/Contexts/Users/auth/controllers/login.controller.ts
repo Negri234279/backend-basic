@@ -9,8 +9,8 @@ import { AccessTokenDto } from '../../shared/dtos/accessTokenDto'
 import { LocalAuthGuard } from '../guards/local-auth.guard'
 import { JwtProvider } from '../../shared/providers/jwt.service'
 
-@ApiTags('Users')
-@Controller('users')
+@ApiTags('Authentications')
+@Controller('auth')
 export class UserLoginController {
     constructor(private readonly jwtProvider: JwtProvider) {}
 

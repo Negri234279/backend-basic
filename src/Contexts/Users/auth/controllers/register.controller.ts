@@ -5,8 +5,8 @@ import { Public } from 'src/Core/infrastructure/decorators/public.decorator'
 import { RegisterDto } from '../../shared/dtos'
 import { UserRegisterService } from '../services/register.service'
 
-@ApiTags('Users')
-@Controller('users')
+@ApiTags('Authentications')
+@Controller('auth')
 export class UserRegisterController {
     constructor(private readonly userRegisterService: UserRegisterService) {}
 

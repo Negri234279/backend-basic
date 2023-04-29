@@ -10,8 +10,8 @@ import { JwtProvider } from '../../shared/providers/jwt.service'
 import { UserRemoveCoachRoleService } from '../services/removeCoachRole.service'
 import { UserRole } from '../../shared/userRole'
 
-@ApiTags('Users')
-@Controller('users')
+@ApiTags('Coaches')
+@Controller('coach')
 export class UserRemoveCoachRoleController {
     constructor(
         private readonly userRemoveCoachRoleService: UserRemoveCoachRoleService,

@@ -11,8 +11,8 @@ import { CoachProfile } from '../../shared/@types/user'
 import { UserModel } from '../../shared/user.model'
 import { UserRole } from '../../shared/userRole'
 
-@ApiTags('Users')
-@Controller('users')
+@ApiTags('Coaches')
+@Controller('coach')
 export class UserCoachesListController {
     constructor(private readonly userCoachesListService: UserCoachesListService) {}
 

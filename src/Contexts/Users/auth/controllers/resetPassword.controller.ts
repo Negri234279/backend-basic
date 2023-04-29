@@ -5,8 +5,8 @@ import { ReqPayload } from 'src/Core/infrastructure/@types/express'
 import { ResetPasswordDto } from '../../shared/dtos'
 import { UserResetPasswordService } from '../services/resetPassword.service'
 
-@ApiTags('Users')
-@Controller('users')
+@ApiTags('Authentications')
+@Controller('auth')
 export class UserResetPasswordController {
     constructor(private readonly userResetPasswordService: UserResetPasswordService) {}
 

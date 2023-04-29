@@ -5,8 +5,8 @@ import { ReqPayload } from 'src/Core/infrastructure/@types/express'
 import { ChangePasswordDto } from '../../shared/dtos'
 import { UserChangePasswordService } from '../services/changePassword.service'
 
-@ApiTags('Users')
-@Controller('users')
+@ApiTags('Authentications')
+@Controller('auth')
 export class UserChangePasswordController {
     constructor(private readonly userChangePasswordService: UserChangePasswordService) {}
 
