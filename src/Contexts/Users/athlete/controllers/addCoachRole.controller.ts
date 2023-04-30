@@ -10,8 +10,8 @@ import { JwtProvider } from '../../shared/providers/jwt.service'
 import { UserAddCoachRoleService } from '../services/addCoachRole.service'
 import { UserRole } from '../../shared/userRole'
 
-@ApiTags('Coaches')
-@Controller('coach')
+@ApiTags('Athletes')
+@Controller('athlete')
 export class UserAddCoachRoleController {
     constructor(
         private readonly userAddCoachRoleService: UserAddCoachRoleService,

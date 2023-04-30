@@ -23,7 +23,7 @@ export class UsersRepository implements UserRepository {
             return null
         }
 
-        return this.toDomain(userEntity)
+        return UserModel.toDomain(userEntity)
     }
 
     async findOneByEmail(email: string): Promise<UserModel | null> {
@@ -32,7 +32,7 @@ export class UsersRepository implements UserRepository {
             return null
         }
 
-        return this.toDomain(userEntity)
+        return UserModel.toDomain(userEntity)
     }
 
     async findOneByUsername(username: string): Promise<UserModel | null> {
@@ -41,7 +41,7 @@ export class UsersRepository implements UserRepository {
             return null
         }
 
-        return this.toDomain(userEntity)
+        return UserModel.toDomain(userEntity)
     }
 
     async findCoaches(pagination: PaginationDto): Promise<UserModel[]> {
@@ -52,7 +52,17 @@ export class UsersRepository implements UserRepository {
             .lean()
             .exec()
 
-        return userEntity.map((user) => this.toDomain(user))
+        return userEntity.map((user) => UserModel.toDomain(user))
+    }
+
+    async findAthleteRequests(id: string): Promise<UserModel> {
+        const userEntity = await this.collection
+            .findById(id)
+            .populate('athleteRequests')
+            .lean()
+            .exec()
+
+        return UserModel.toDomain(userEntity)
     }
 
     async countCoaches(): Promise<number> {
@@ -60,7 +70,7 @@ export class UsersRepository implements UserRepository {
     }
 
     async save(user: UserModel): Promise<void> {
-        const newUser = this.toPersistance(user)
+        const newUser = user.toPersistence()
         const createdUser = new this.collection(newUser)
 
         await createdUser.save()
@@ -69,35 +79,12 @@ export class UsersRepository implements UserRepository {
     async update(user: UserModel): Promise<void> {
         user.updatedAt = new Date()
 
-        const { _id, ...rest } = this.toPersistance(user)
+        const { _id, ...rest } = user.toPersistence()
 
         await this.collection.updateOne({ _id }, rest).exec()
     }
 
     async delete(id: string): Promise<void> {
         await this.collection.deleteOne({ _id: id }).exec()
-    }
-
-    private toPersistance(user: UserModel): UserEntity {
-        const userEntity = new UserEntity()
-        userEntity._id = user.id
-        userEntity.username = user.username
-        userEntity.password = user.password
-        userEntity.email = user.email
-        userEntity.name = user.name
-        userEntity.surname = user.surname
-        userEntity.role = user.role
-        userEntity.coach = user.coach
-        userEntity.athleteRequests = user.athleteRequests
-        userEntity.createdAt = user.createdAt
-        userEntity.updatedAt = user.updatedAt
-
-        return userEntity
-    }
-
-    private toDomain(userEntity: UserEntity): UserModel {
-        const { _id: id, ...restUser } = userEntity
-
-        return new UserModel({ ...restUser, id })
     }
 }

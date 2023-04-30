@@ -4,8 +4,8 @@ export interface User extends UserProfile {
     id: string
     password: string
     coach?: string
-    athletes?: string[]
-    athleteRequests?: string[]
+    athletes?: string[] | UserModel[]
+    athleteRequests?: string[] | UserModel[]
 }
 
 export interface UserProfile {

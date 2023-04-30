@@ -22,7 +22,7 @@ export class UserCoachesListController {
         description:
             'Returns a list of all coaches registered in the system, with their basic information and coach-specific details',
     })
-    @Get('coaches')
+    @Get()
     @Roles(UserRole.ATHLETE, UserRole.COACH)
     async execute(
         @Req() req: ReqPayload,
