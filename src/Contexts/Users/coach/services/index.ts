@@ -2,6 +2,7 @@ import { UserCoachAcceptAthleteService } from './acceptAthlete.service'
 import { UserCoachesListService } from './coachesList.service'
 import { UserCoachGetAthleteRequestsService } from './getAthleteRequests.service'
 import { UserCoachGetAthletesService } from './getAthletes.service'
+import { UserCoachRejectAthleteService } from './rejectAthlete.service'
 import { UserRemoveCoachRoleService } from './removeCoachRole.service'
 
 export const UserCoachServices = [
@@ -10,4 +11,5 @@ export const UserCoachServices = [
     UserCoachAcceptAthleteService,
     UserCoachGetAthleteRequestsService,
     UserCoachGetAthletesService,
+    UserCoachRejectAthleteService,
 ]

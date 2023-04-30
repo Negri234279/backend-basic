@@ -1,15 +1,13 @@
-import { Model } from 'mongoose'
-import { PaginationDto } from 'src/Core/infrastructure/dtos/pagination.dto'
-
 import { Injectable } from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
-
-import { UserModel } from '../user.model'
-import { UserRole } from '../userRole'
-import { UserRepository } from '../@types/user.repository'
-import { UserEntity } from './user.schema'
-import { propertyUserEntity } from '../@types/user'
+import { Model } from 'mongoose'
 import { IPaginated } from 'src/Core/infrastructure/@types/pagination'
+import { PaginationDto } from 'src/Core/infrastructure/dtos/pagination.dto'
+
+import { propertyUserEntity } from '../@types/user'
+import { UserRepository } from '../@types/user.repository'
+import { UserModel } from '../user.model'
+import { UserEntity } from './user.schema'
 
 @Injectable()
 export class UsersRepository implements UserRepository {

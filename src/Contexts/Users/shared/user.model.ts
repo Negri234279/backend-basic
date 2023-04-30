@@ -106,6 +106,18 @@ export class UserModel implements User {
         this.athleteRequests = athleteRequests.filter((id) => id !== idAthlete)
     }
 
+    public rejectAthlete(idAthlete: string): void {
+        const isAthleteRequested = this.athleteRequests.includes(idAthlete as UserModel & string)
+        const isAthleteAccepted = this.athletes.includes(idAthlete as UserModel & string)
+
+        if (!isAthleteRequested || isAthleteAccepted) {
+            throw new ConflictException()
+        }
+
+        const athleteRequests = this.athleteRequests as string[]
+        this.athleteRequests = athleteRequests.filter((id) => id !== idAthlete)
+    }
+
     public static async hashPassword(password: string): Promise<string> {
         return await bcrypt.hash(password, this.salt)
     }
