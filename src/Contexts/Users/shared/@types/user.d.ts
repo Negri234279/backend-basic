@@ -21,3 +21,5 @@ export interface UserProfile {
 export interface AthleteProfile extends Pick<UserProfile, 'id' | 'username' | 'name' | 'surname'> {}
 
 export interface CoachProfile extends Pick<UserProfile, 'id' | 'username' | 'name' | 'surname'> {}
+
+export type propertyUserEntity = keyof UserEntity

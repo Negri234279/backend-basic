@@ -11,7 +11,7 @@ export class UserLoginService {
     async execute(loginDto: LoginDto): Promise<UserModel> {
         const { email, password } = loginDto
 
-        const user = await this.usersRepository.findOneByEmail(email)
+        const user = await this.usersRepository.findOneBy('email', email)
         if (!user) {
             throw new ConflictException()
         }

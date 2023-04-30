@@ -4,6 +4,7 @@ import { PaginationDto } from 'src/Core/infrastructure/dtos/pagination.dto'
 
 import { UsersRepository } from '../../shared/database/users.repository'
 import { UserModel } from '../../shared/user.model'
+import { UserRole } from '../../shared/userRole'
 
 @Injectable()
 export class UserCoachesListService {
@@ -19,9 +20,6 @@ export class UserCoachesListService {
             throw new ForbiddenException()
         }
 
-        const data = await this.usersRepository.findCoaches(pagination)
-        const count = await this.usersRepository.countCoaches()
-
-        return { data, count }
+        return await this.usersRepository.find('role', UserRole.COACH, pagination)
     }
 }

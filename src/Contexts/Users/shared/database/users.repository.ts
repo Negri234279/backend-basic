@@ -8,6 +8,8 @@ import { UserModel } from '../user.model'
 import { UserRole } from '../userRole'
 import { UserRepository } from '../@types/user.repository'
 import { UserEntity } from './user.schema'
+import { propertyUserEntity } from '../@types/user'
+import { IPaginated } from 'src/Core/infrastructure/@types/pagination'
 
 @Injectable()
 export class UsersRepository implements UserRepository {
@@ -17,8 +19,24 @@ export class UsersRepository implements UserRepository {
         return !!(await this.collection.countDocuments({ _id: id }).exec())
     }
 
-    async findOne(id: string): Promise<UserModel | null> {
-        const userEntity = await this.collection.findById(id).lean().exec()
+    async findOne(
+        id: string,
+        options: { populateRequestAthletes?: boolean; populateAthletes?: boolean } = {},
+    ): Promise<UserModel | null> {
+        const { populateRequestAthletes = false, populateAthletes = false } = options
+
+        const query = this.collection.findById(id)
+
+        if (populateRequestAthletes) {
+            query.populate('athleteRequests')
+        }
+
+        if (populateAthletes) {
+            query.populate('athletes')
+        }
+
+        const userEntity = await query.lean().exec()
+
         if (!userEntity) {
             return null
         }
@@ -26,47 +44,41 @@ export class UsersRepository implements UserRepository {
         return UserModel.toDomain(userEntity)
     }
 
-    async findOneByEmail(email: string): Promise<UserModel | null> {
-        const userEntity = await this.collection.findOne({ email }).lean().exec()
-        if (!userEntity) {
-            return null
-        }
-
-        return UserModel.toDomain(userEntity)
-    }
-
-    async findOneByUsername(username: string): Promise<UserModel | null> {
-        const userEntity = await this.collection.findOne({ username }).lean().exec()
-        if (!userEntity) {
-            return null
-        }
-
-        return UserModel.toDomain(userEntity)
-    }
-
-    async findCoaches(pagination: PaginationDto): Promise<UserModel[]> {
+    async findOneBy(property: propertyUserEntity, value: any): Promise<UserModel | null> {
         const userEntity = await this.collection
-            .find({ role: UserRole.COACH })
-            .skip(pagination.page)
-            .limit(pagination.limit)
+            .findOne({ [property]: value })
             .lean()
             .exec()
 
-        return userEntity.map((user) => UserModel.toDomain(user))
-    }
-
-    async findAthleteRequests(id: string): Promise<UserModel> {
-        const userEntity = await this.collection
-            .findById(id)
-            .populate('athleteRequests')
-            .lean()
-            .exec()
+        if (!userEntity) {
+            return null
+        }
 
         return UserModel.toDomain(userEntity)
     }
 
-    async countCoaches(): Promise<number> {
-        return this.collection.countDocuments({ role: UserRole.COACH }).exec()
+    async find(
+        property: propertyUserEntity,
+        value: any,
+        pagination?: PaginationDto,
+    ): Promise<IPaginated<UserModel>> {
+        const query = { [property]: value }
+        const count = await this.collection.countDocuments(query).exec()
+
+        const queryBuilder = this.collection.find(query)
+
+        if (pagination) {
+            const { page = 1, limit = 10 } = pagination
+            queryBuilder.skip((page - 1) * limit).limit(limit)
+        }
+
+        const users = await queryBuilder.lean().exec()
+        const data = users.map((user) => UserModel.toDomain(user))
+
+        return {
+            data,
+            count,
+        }
     }
 
     async save(user: UserModel): Promise<void> {

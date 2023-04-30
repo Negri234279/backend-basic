@@ -8,11 +8,11 @@ export class UserCoachGetAthleteRequestsService {
     constructor(private readonly usersRepository: UsersRepository) {}
 
     async execute(idCoach: string): Promise<UserModel> {
-        const coach = await this.usersRepository.findOne(idCoach)
+        const coach = await this.usersRepository.findOne(idCoach, { populateRequestAthletes: true })
         if (!coach || !coach.isCoach()) {
             throw new NotFoundException()
         }
 
-        return await this.usersRepository.findAthleteRequests(idCoach)
+        return coach
     }
 }
