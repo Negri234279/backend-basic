@@ -1,4 +1,4 @@
-import { Controller, Post, Req, UseGuards } from '@nestjs/common'
+import { Controller, HttpCode, Post, Req, UseGuards } from '@nestjs/common'
 import { ApiBody, ApiCreatedResponse, ApiOperation, ApiTags } from '@nestjs/swagger'
 import { ReqPayload } from 'src/Core/infrastructure/@types/express'
 import { AccessToken } from 'src/Core/infrastructure/@types/userPayload'
@@ -14,6 +14,7 @@ import { JwtProvider } from '../../shared/providers/jwt.service'
 export class UserLoginController {
     constructor(private readonly jwtProvider: JwtProvider) {}
 
+    @HttpCode(200)
     @Public()
     @UseGuards(LocalAuthGuard)
     @Post('login')
