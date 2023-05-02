@@ -1,5 +1,5 @@
 import { ReqPayload } from 'src/Core/infrastructure/@types/express'
-import { IPaginatedRes } from 'src/Core/infrastructure/@types/pagination'
+import { PaginationRes } from 'src/Core/infrastructure/@types/pagination'
 import { Roles } from 'src/Core/infrastructure/decorators/roles.decorator'
 import { PaginationDto } from 'src/Core/infrastructure/dtos/pagination.dto'
 
@@ -27,7 +27,7 @@ export class UserCoachesListController {
     async execute(
         @Req() req: ReqPayload,
         @Query() pagination: PaginationDto,
-    ): Promise<IPaginatedRes<CoachProfile>> {
+    ): Promise<PaginationRes<CoachProfile>> {
         const { data, count } = await this.userCoachesListService.execute(req.user.id, pagination)
 
         if (!data.length) {

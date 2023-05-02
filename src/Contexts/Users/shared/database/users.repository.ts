@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
 import { Model } from 'mongoose'
-import { IPaginated } from 'src/Core/infrastructure/@types/pagination'
+import { Pagination } from 'src/Core/infrastructure/@types/pagination'
 import { PaginationDto } from 'src/Core/infrastructure/dtos/pagination.dto'
 
 import { propertyUserEntity } from '../@types/user'
@@ -59,7 +59,7 @@ export class UsersRepository implements UserRepository {
         property: propertyUserEntity,
         value: any,
         pagination?: PaginationDto,
-    ): Promise<IPaginated<UserModel>> {
+    ): Promise<Pagination<UserModel>> {
         const query = { [property]: value }
         const count = await this.collection.countDocuments(query).exec()
 

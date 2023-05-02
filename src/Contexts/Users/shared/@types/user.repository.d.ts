@@ -13,7 +13,7 @@ export interface UserRepository {
         property: propertyUserEntity,
         value: any,
         pagination?: PaginationDto,
-    ): Promise<IPaginated<UserModel>>
+    ): Promise<Pagination<UserModel>>
 
     save(user: UserModel): Promise<void>
     update(user: UserModel): Promise<void>

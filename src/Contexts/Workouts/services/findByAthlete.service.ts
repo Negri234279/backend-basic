@@ -1,23 +1,31 @@
 import { ConflictException, Injectable } from '@nestjs/common'
 import { UsersRepository } from 'src/Contexts/Users/shared/database/users.repository'
-import { IPaginated } from 'src/Core/infrastructure/@types/pagination'
+import { Pagination, PaginationRes } from 'src/Core/infrastructure/@types/pagination'
 import { UserPayload } from 'src/Core/infrastructure/@types/userPayload'
 import { PaginationDto } from 'src/Core/infrastructure/dtos/pagination.dto'
 
-import { FilterWorkouts } from '../workoutFilters'
 import { WorkoutsRepository } from '../database/workouts.repository'
 import { WorkoutFilters } from '../dtos/workoutsFilters.dto'
 import { WorkoutModel } from '../workout.model'
+import { FilterWorkoutsService } from './filterWorkouts.service'
+import { SortWorkoutsService } from './sortWorkout.service'
+import { PaginationService } from 'src/Core/application/services/pagination.service'
 
 @Injectable()
 export class WorkoutFindByAthleteService {
     constructor(
         private readonly workoutsRepository: WorkoutsRepository,
         private readonly usersRepository: UsersRepository,
+        private readonly filterWorkoutsService: FilterWorkoutsService,
+        private readonly sortWorkoutsService: SortWorkoutsService,
+        private readonly paginationService: PaginationService,
     ) {}
 
-    async execute(user: UserPayload, filters: WorkoutFilters): Promise<IPaginated<WorkoutModel>> {
-        const { page, limit, filterBy, sortBy } = filters
+    async execute(
+        user: UserPayload,
+        filters: WorkoutFilters,
+    ): Promise<PaginationRes<WorkoutModel>> {
+        const { filterBy, sortBy, ...pagination } = filters
 
         const userExist = await this.usersRepository.exist(user.id)
         if (!userExist) {
@@ -26,22 +34,13 @@ export class WorkoutFindByAthleteService {
 
         const workouts = await this.workoutsRepository.findByAthelte(user.id)
 
-        const workoutFiltered = FilterWorkouts.execute(workouts, filterBy)
+        const workoutsFiltered = this.filterWorkoutsService.execute(workouts, filterBy)
+        const workoutsSorted = this.sortWorkoutsService.execute(workoutsFiltered, sortBy)
 
-        const paginatedWorkouts = this.paginate(workoutFiltered, { page, limit })
-
-        return {
-            data: paginatedWorkouts,
-            count: workoutFiltered.length,
-        }
-    }
-
-    private paginate(items: WorkoutModel[], pagination: PaginationDto): WorkoutModel[] {
-        const { page, limit } = pagination
-
-        const startIndex = (page - 1) * limit
-        const endIndex = startIndex + limit
-
-        return items.slice(startIndex, endIndex)
+        return this.paginationService.execute<WorkoutModel>(
+            workoutsSorted,
+            pagination,
+            workoutsFiltered.length,
+        )
     }
 }

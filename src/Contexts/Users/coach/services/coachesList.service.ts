@@ -1,5 +1,5 @@
 import { ConflictException, ForbiddenException, Injectable } from '@nestjs/common'
-import { IPaginated } from 'src/Core/infrastructure/@types/pagination'
+import { Pagination } from 'src/Core/infrastructure/@types/pagination'
 import { PaginationDto } from 'src/Core/infrastructure/dtos/pagination.dto'
 
 import { UsersRepository } from '../../shared/database/users.repository'
@@ -10,7 +10,7 @@ import { UserRole } from '../../shared/userRole'
 export class UserCoachesListService {
     constructor(private readonly usersRepository: UsersRepository) {}
 
-    async execute(id: string, pagination: PaginationDto): Promise<IPaginated<UserModel>> {
+    async execute(id: string, pagination: PaginationDto): Promise<Pagination<UserModel>> {
         const user = await this.usersRepository.findOne(id)
         if (!user) {
             throw new ConflictException()

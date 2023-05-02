@@ -3,6 +3,8 @@ import { WorkoutDeleteService } from './delete.service'
 import { WorkoutFindByAthleteService } from './findByAthlete.service'
 import { WorkoutFindOneByAthleteService } from './findOneByAthlete.service'
 import { WorkoutUpdateService } from './update.service'
+import { FilterWorkoutsService } from './filterWorkouts.service'
+import { SortWorkoutsService } from './sortWorkout.service'
 
 export const WorkoutServices = [
     WorkoutFindByAthleteService,
@@ -10,4 +12,6 @@ export const WorkoutServices = [
     WorkoutCreateService,
     WorkoutUpdateService,
     WorkoutDeleteService,
+    FilterWorkoutsService,
+    SortWorkoutsService,
 ]
