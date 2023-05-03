@@ -55,28 +55,13 @@ export class UsersRepository implements UserRepository {
         return UserModel.toDomain(userEntity)
     }
 
-    async find(
-        property: propertyUserEntity,
-        value: any,
-        pagination?: PaginationDto,
-    ): Promise<Pagination<UserModel>> {
-        const query = { [property]: value }
-        const count = await this.collection.countDocuments(query).exec()
+    async find(property: propertyUserEntity, value: any): Promise<UserModel[]> {
+        const users = await this.collection
+            .find({ [property]: value })
+            .lean()
+            .exec()
 
-        const queryBuilder = this.collection.find(query)
-
-        if (pagination) {
-            const { page = 1, limit = 10 } = pagination
-            queryBuilder.skip((page - 1) * limit).limit(limit)
-        }
-
-        const users = await queryBuilder.lean().exec()
-        const data = users.map((user) => UserModel.toDomain(user))
-
-        return {
-            data,
-            count,
-        }
+        return users.map((user) => UserModel.toDomain(user))
     }
 
     async save(user: UserModel): Promise<void> {

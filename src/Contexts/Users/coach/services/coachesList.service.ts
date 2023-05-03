@@ -1,5 +1,6 @@
 import { ConflictException, ForbiddenException, Injectable } from '@nestjs/common'
-import { Pagination } from 'src/Core/infrastructure/@types/pagination'
+import { PaginationService } from 'src/Core/application/services/pagination.service'
+import { PaginationRes } from 'src/Core/infrastructure/@types/pagination'
 import { PaginationDto } from 'src/Core/infrastructure/dtos/pagination.dto'
 
 import { UsersRepository } from '../../shared/database/users.repository'
@@ -8,9 +9,12 @@ import { UserRole } from '../../shared/userRole'
 
 @Injectable()
 export class UserCoachesListService {
-    constructor(private readonly usersRepository: UsersRepository) {}
+    constructor(
+        private readonly usersRepository: UsersRepository,
+        private readonly paginationService: PaginationService,
+    ) {}
 
-    async execute(id: string, pagination: PaginationDto): Promise<Pagination<UserModel>> {
+    async execute(id: string, pagination: PaginationDto): Promise<PaginationRes<UserModel>> {
         const user = await this.usersRepository.findOne(id)
         if (!user) {
             throw new ConflictException()
@@ -20,6 +24,8 @@ export class UserCoachesListService {
             throw new ForbiddenException()
         }
 
-        return await this.usersRepository.find('role', UserRole.COACH, pagination)
+        const coaches = await this.usersRepository.find('role', UserRole.COACH)
+
+        return this.paginationService.execute<UserModel>(coaches, pagination, coaches.length)
     }
 }

@@ -1,15 +1,14 @@
+import { Controller, Get, Query, Req } from '@nestjs/common'
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger'
 import { ReqPayload } from 'src/Core/infrastructure/@types/express'
 import { PaginationRes } from 'src/Core/infrastructure/@types/pagination'
 import { Roles } from 'src/Core/infrastructure/decorators/roles.decorator'
 import { PaginationDto } from 'src/Core/infrastructure/dtos/pagination.dto'
 
-import { Controller, Get, HttpException, Query, Req } from '@nestjs/common'
-import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger'
-
-import { UserCoachesListService } from '../services/coachesList.service'
 import { CoachProfile } from '../../shared/@types/user'
 import { UserModel } from '../../shared/user.model'
 import { UserRole } from '../../shared/userRole'
+import { UserCoachesListService } from '../services/coachesList.service'
 
 @ApiTags('Coaches')
 @Controller('coach')
@@ -28,18 +27,7 @@ export class UserCoachesListController {
         @Req() req: ReqPayload,
         @Query() pagination: PaginationDto,
     ): Promise<PaginationRes<CoachProfile>> {
-        const { data, count } = await this.userCoachesListService.execute(req.user.id, pagination)
-
-        if (!data.length) {
-            throw new HttpException('No coaches found', 204)
-        }
-
-        return {
-            data: this.serializeCoaches(data),
-            count,
-            currentPage: pagination.page,
-            totalPages: Math.ceil(count / pagination.limit),
-        }
+        return await this.userCoachesListService.execute(req.user.id, pagination)
     }
 
     private serializeCoaches(user: UserModel[]): CoachProfile[] {

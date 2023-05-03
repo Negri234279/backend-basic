@@ -11,7 +11,7 @@ import { FilterWorkoutsService } from './filterWorkouts.service'
 import { SortWorkoutsService } from './sortWorkout.service'
 
 @Injectable()
-export class WorkoutFindByAthleteService {
+export class WorkoutFindByCoachAthleteService {
     constructor(
         private readonly workoutsRepository: WorkoutsRepository,
         private readonly usersRepository: UsersRepository,
@@ -20,18 +20,15 @@ export class WorkoutFindByAthleteService {
         private readonly paginationService: PaginationService,
     ) {}
 
-    async execute(
-        user: UserPayload,
-        filters: WorkoutFilters,
-    ): Promise<PaginationRes<WorkoutModel>> {
+    async execute(userId: string, filters: WorkoutFilters): Promise<PaginationRes<WorkoutModel>> {
         const { filterBy, sortBy, ...pagination } = filters
 
-        const userExist = await this.usersRepository.exist(user.id)
+        const userExist = await this.usersRepository.findOne(userId)
         if (!userExist) {
             throw new ConflictException()
         }
 
-        const workouts = await this.workoutsRepository.findByAthelte(user.id)
+        const workouts = await this.workoutsRepository.findByAthelte(userId, userExist.coach)
 
         const workoutsFiltered = this.filterWorkoutsService.execute(workouts, filterBy)
         const workoutsSorted = this.sortWorkoutsService.execute(workoutsFiltered, sortBy)

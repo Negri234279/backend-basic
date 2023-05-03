@@ -41,10 +41,10 @@ export class WorkoutsRepository implements WorkoutRepository {
         return this.toDomain(workoutEntity)
     }
 
-    async findByAthelte(id: string): Promise<WorkoutModel[]> {
+    async findByAthelte(athlete: string, coach?: string): Promise<WorkoutModel[]> {
         const workoutEntity = await this.collection
             .find({
-                $and: [{ athlete: id }, { coach: null }],
+                $and: [{ athlete }, { coach: coach ?? null }],
             })
             .lean()
             .exec()
