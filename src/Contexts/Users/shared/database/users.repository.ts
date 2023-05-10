@@ -1,8 +1,6 @@
 import { Injectable } from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
 import { Model } from 'mongoose'
-import { Pagination } from 'src/Core/infrastructure/@types/pagination'
-import { PaginationDto } from 'src/Core/infrastructure/dtos/pagination.dto'
 
 import { propertyUserEntity } from '../@types/user'
 import { UserRepository } from '../@types/user.repository'
@@ -66,6 +64,7 @@ export class UsersRepository implements UserRepository {
 
     async save(user: UserModel): Promise<void> {
         const newUser = user.toPersistence()
+
         const createdUser = new this.collection(newUser)
 
         await createdUser.save()

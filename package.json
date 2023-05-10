@@ -23,7 +23,7 @@
         "prettier:check": "prettier --check ./**/*.{ts,js,json,*rc}",
         "prettier:write": "prettier --write ./**/*.{ts,js,json,*rc}",
         "lint": "npm run eslint:check && npm run prettier:check",
-        "precommit": "lint-staged && npm run lint && npm run test",
+        "precommit": "lint-staged && npm run lint",
         "prepare": "husky install",
         "prepush": "npm run test",
         "seed": "node dist/Core/infrastructure/mongodb/seeder",

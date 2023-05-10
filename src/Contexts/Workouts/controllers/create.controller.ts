@@ -16,6 +16,6 @@ export class WorkoutCreateController {
     @Post()
     @Roles(UserRole.ATHLETE)
     async execute(@Req() req: ReqPayload, @Body() body: CreateWorkoutDto): Promise<void> {
-        await this.workoutCreateService.execute(req.user, body)
+        await this.workoutCreateService.execute(req.user.id, body)
     }
 }

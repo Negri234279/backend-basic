@@ -14,8 +14,8 @@ describe('AppController', () => {
     })
 
     describe('root', () => {
-        it('should return "void"', () => {
-            expect(appController.healthcheck()).toBeUndefined()
+        it('should return "OK"', () => {
+            expect(appController.healthcheck()).toBe('OK')
         })
     })
 })

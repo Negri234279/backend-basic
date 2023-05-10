@@ -1,7 +1,5 @@
-import { UsersRepository } from 'src/Contexts/Users/shared/database/users.repository'
-import { UserPayload } from 'src/Core/infrastructure/@types/userPayload'
-
 import { ConflictException, Injectable } from '@nestjs/common'
+import { UsersRepository } from 'src/Contexts/Users/shared/database/users.repository'
 
 import { WorkoutsRepository } from '../database/workouts.repository'
 import { CreateWorkoutDto } from '../dtos/createWorkout.dto'
@@ -14,8 +12,8 @@ export class WorkoutCreateService {
         private readonly usersRepository: UsersRepository,
     ) {}
 
-    async execute(user: UserPayload, createDto: CreateWorkoutDto): Promise<void> {
-        const userExist = await this.usersRepository.exist(user.id)
+    async execute(athleteId: string, createDto: CreateWorkoutDto): Promise<void> {
+        const userExist = await this.usersRepository.exist(athleteId)
         if (!userExist) {
             throw new ConflictException()
         }
@@ -29,10 +27,10 @@ export class WorkoutCreateService {
 
         const workout = new WorkoutModel({
             ...createDto,
-            isCompleted: createDto?.isCompleted,
-            isSuccessful: createDto?.isSuccessful,
-            athlete: user.id,
-            coach: createDto?.coach,
+            isCompleted: createDto?.isCompleted ?? null,
+            isSuccessful: createDto?.isSuccessful ?? null,
+            athlete: athleteId,
+            coach: null,
             createdAt: newDate,
             updatedAt: newDate,
         })

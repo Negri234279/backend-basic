@@ -167,14 +167,14 @@ export class UserModel implements User {
     }
 
     public toPersistence(): UserEntity {
-        const athletesDTO: string[] = this.athletes.map((athlete) => {
+        const athletesDTO: string[] = this.athletes?.map((athlete) => {
             if (typeof athlete === 'string') {
                 return athlete
             }
             return athlete.id
         })
 
-        const athleteRequestsDTO: string[] = this.athleteRequests.map((athleteRequest) => {
+        const athleteRequestsDTO: string[] = this.athleteRequests?.map((athleteRequest) => {
             if (typeof athleteRequest === 'string') {
                 return athleteRequest
             }
