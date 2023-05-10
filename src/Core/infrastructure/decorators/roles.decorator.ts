@@ -1,4 +1,4 @@
-import { UserRole } from 'src/Contexts/Users/userRole'
+import { UserRole } from 'src/Contexts/Users/shared/userRole'
 
 import { SetMetadata } from '@nestjs/common'
 

@@ -1,5 +1,5 @@
-import { AthleteProfile, CoachProfile } from '../Users/@types/user'
-import { UserModel } from '../Users/user.model'
+import { AthleteProfile, CoachProfile } from '../Users/shared/@types/user'
+import { UserModel } from '../Users/shared/user.model'
 import { Comment } from './@types/comment'
 
 export class CommentModel implements Comment {

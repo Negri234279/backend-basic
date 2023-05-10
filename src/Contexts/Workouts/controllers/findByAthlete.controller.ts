@@ -1,10 +1,11 @@
-import { UserRole } from 'src/Contexts/Users/userRole'
+import { Controller, Get, Query, Req } from '@nestjs/common'
+import { ApiTags } from '@nestjs/swagger'
+import { UserRole } from 'src/Contexts/Users/shared/userRole'
 import { ReqPayload } from 'src/Core/infrastructure/@types/express'
+import { PaginationRes } from 'src/Core/infrastructure/@types/pagination'
 import { Roles } from 'src/Core/infrastructure/decorators/roles.decorator'
 
-import { Controller, Get, HttpException, Req } from '@nestjs/common'
-import { ApiTags } from '@nestjs/swagger'
-
+import { WorkoutFilters } from '../dtos/workoutsFilters.dto'
 import { WorkoutFindByAthleteService } from '../services/findByAthlete.service'
 import { WorkoutModel } from '../workout.model'
 
@@ -15,12 +16,10 @@ export class WorkoutFindByAthleteController {
 
     @Get()
     @Roles(UserRole.ATHLETE)
-    async execute(@Req() req: ReqPayload): Promise<WorkoutModel[]> {
-        const workouts = await this.workoutFindByAthleteService.execute(req.user)
-        if (!workouts.length) {
-            throw new HttpException('No workouts found', 204)
-        }
-
-        return workouts
+    async execute(
+        @Req() req: ReqPayload,
+        @Query() filters: WorkoutFilters,
+    ): Promise<PaginationRes<WorkoutModel>> {
+        return await this.workoutFindByAthleteService.execute(req.user, filters)
     }
 }

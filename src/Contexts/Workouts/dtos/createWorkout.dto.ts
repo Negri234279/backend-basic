@@ -44,20 +44,10 @@ export class CreateWorkoutDto {
     @ApiProperty()
     @IsOptional()
     @IsBoolean()
-    isCompleted?: boolean
+    isCompleted?: boolean = false
 
     @ApiProperty()
     @IsOptional()
     @IsBoolean()
-    isSuccessful?: boolean
-
-    @ApiProperty({ type: 'string', format: 'uuid' })
-    @IsUUID()
-    @IsNotEmpty()
-    athlete: string
-
-    @ApiProperty({ type: 'string', format: 'uuid' })
-    @IsUUID()
-    @IsOptional()
-    coach?: string
+    isSuccessful?: boolean = false
 }

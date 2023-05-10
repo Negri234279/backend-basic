@@ -1,5 +1,5 @@
 import { faker } from '@faker-js/faker'
-import { athlete as userAthlete } from 'src/Contexts/Users/database/users.seeder'
+import { athlete as userAthlete } from 'src/Contexts/Users/shared/database/users.seeder'
 
 import { Workout } from '../@types/workout'
 import { WorkoutEntity } from './workout.schema'

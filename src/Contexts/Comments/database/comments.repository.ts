@@ -1,12 +1,12 @@
 import { Injectable } from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
 import { Model } from 'mongoose'
-import { UserModel } from 'src/Contexts/Users/user.model'
+import { UserModel } from 'src/Contexts/Users/shared/user.model'
 
+import { CommentRepository } from '../@types/comment.repository'
 import { CommentWithUser } from '../@types/commentWithUser'
 import { CommentModel } from '../comment.model'
 import { CommentEntity } from './comment.schema'
-import { CommentRepository } from '../@types/comment.repository'
 
 @Injectable()
 export class CommentsRepository implements CommentRepository {

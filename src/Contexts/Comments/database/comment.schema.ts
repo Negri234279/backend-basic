@@ -1,5 +1,5 @@
 import { HydratedDocument } from 'mongoose'
-import { UserEntity } from 'src/Contexts/Users/database/user.schema'
+import { UserEntity } from 'src/Contexts/Users/shared/database/user.schema'
 import { BaseEntity } from 'src/Core/infrastructure/mongodb/baseEntity'
 
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
