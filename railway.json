@@ -10,5 +10,13 @@
     "startCommand": "npm run start:prod",
     "restartPolicyType": "ON_FAILURE",
     "restartPolicyMaxRetries": 10
+  },
+  "check": {
+    "type": "http",
+    "path": "/api/v1",
+    "interval": 30,
+    "timeout": 10,
+    "healthyThreshold": 1,
+    "unhealthyThreshold": 2
   }
 }
