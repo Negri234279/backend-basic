@@ -12,7 +12,7 @@ module.exports = {
         node: true,
         jest: true,
     },
-    ignorePatterns: ['.eslintrc.js'],
+    ignorePatterns: ['.eslintrc.js', 'railway.json'],
     rules: {
         quotes: ['error', 'single'],
         semi: ['error', 'never'],

@@ -44,10 +44,10 @@ export class CreateWorkoutDto {
     @ApiProperty()
     @IsOptional()
     @IsBoolean()
-    isCompleted?: boolean = false
+    isCompleted = false
 
     @ApiProperty()
     @IsOptional()
     @IsBoolean()
-    isSuccessful?: boolean = false
+    isSuccessful = false
 }

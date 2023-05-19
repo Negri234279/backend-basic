@@ -7,8 +7,8 @@ export class WorkoutModel implements Workout {
     public reps: number
     public weight: number
     public date: Date
-    public isCompleted: boolean | null
-    public isSuccessful: boolean | null
+    public isCompleted: boolean
+    public isSuccessful: boolean
     public athlete: string
     public coach: string | null
     public createdAt: Date

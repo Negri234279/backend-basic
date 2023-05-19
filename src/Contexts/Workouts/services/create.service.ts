@@ -27,8 +27,6 @@ export class WorkoutCreateService {
 
         const workout = new WorkoutModel({
             ...createDto,
-            isCompleted: createDto?.isCompleted ?? null,
-            isSuccessful: createDto?.isSuccessful ?? null,
             athlete: athleteId,
             coach: null,
             createdAt: newDate,

@@ -2,7 +2,6 @@ import { ConflictException, Injectable } from '@nestjs/common'
 import { UsersRepository } from 'src/Contexts/Users/shared/database/users.repository'
 import { PaginationService } from 'src/Core/application/services/pagination.service'
 import { PaginationRes } from 'src/Core/infrastructure/@types/pagination'
-import { UserPayload } from 'src/Core/infrastructure/@types/userPayload'
 
 import { WorkoutsRepository } from '../database/workouts.repository'
 import { WorkoutFilters } from '../dtos/workoutsFilters.dto'
@@ -23,12 +22,12 @@ export class WorkoutFindByCoachAthleteService {
     async execute(userId: string, filters: WorkoutFilters): Promise<PaginationRes<WorkoutModel>> {
         const { filterBy, sortBy, ...pagination } = filters
 
-        const userExist = await this.usersRepository.findOne(userId)
-        if (!userExist) {
+        const user = await this.usersRepository.findOne(userId)
+        if (!user) {
             throw new ConflictException()
         }
 
-        const workouts = await this.workoutsRepository.findByAthelte(userId, userExist.coach)
+        const workouts = await this.workoutsRepository.findByAthelte(userId, user.coach)
 
         const workoutsFiltered = this.filterWorkoutsService.execute(workouts, filterBy)
         const workoutsSorted = this.sortWorkoutsService.execute(workoutsFiltered, sortBy)
