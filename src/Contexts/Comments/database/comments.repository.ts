@@ -34,9 +34,9 @@ export class CommentsRepository implements CommentRepository {
         return commentEntities.map((commentEntity) => this.toDomain(commentEntity))
     }
 
-    async findByWorkoutWithUsername(author: string, workout: string): Promise<CommentWithUser[]> {
+    async findByWorkoutWithAuthor(workout: string): Promise<CommentWithUser[]> {
         const commentEntities = await this.collection
-            .find({ author, workout })
+            .find({ workout })
             .populate('author')
             .lean()
             .exec()

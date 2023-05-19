@@ -14,17 +14,17 @@ export class CommentFindByWorkoutService {
         private readonly CommentRepository: CommentsRepository,
     ) {}
 
-    async execute(user: UserPayload, id: string): Promise<CommentWithUser[]> {
+    async execute(user: UserPayload, idWorkout: string): Promise<CommentWithUser[]> {
         const userExist = await this.usersRepository.exist(user.id)
         if (!userExist) {
             throw new ConflictException()
         }
 
-        const workoutExist = await this.workoutsRepository.exist(id)
+        const workoutExist = await this.workoutsRepository.exist(idWorkout)
         if (!workoutExist) {
             throw new ConflictException()
         }
 
-        return await this.CommentRepository.findByWorkoutWithUsername(user.id, id)
+        return await this.CommentRepository.findByWorkoutWithAuthor(idWorkout)
     }
 }
