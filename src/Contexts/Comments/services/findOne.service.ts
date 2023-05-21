@@ -1,4 +1,4 @@
-import { ConflictException, Injectable } from '@nestjs/common'
+import { ConflictException, Injectable, NotFoundException } from '@nestjs/common'
 import { UsersRepository } from 'src/Contexts/Users/shared/database/users.repository'
 
 import { CommentWithUser } from '../@types/commentWithUser'
@@ -17,6 +17,11 @@ export class CommentFindOneService {
             throw new ConflictException()
         }
 
-        return await this.commentRepository.findOneWithAuthor(idComment)
+        const comment = await this.commentRepository.findOneWithAuthor(idComment)
+        if (!comment) {
+            throw new NotFoundException()
+        }
+
+        return comment
     }
 }

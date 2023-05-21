@@ -7,7 +7,7 @@ import { CommentsRepository } from '../database/comments.repository'
 export class CommentDeleteService {
     constructor(
         private readonly usersRepository: UsersRepository,
-        private readonly CommentRepository: CommentsRepository,
+        private readonly commentRepository: CommentsRepository,
     ) {}
 
     async execute(userId: string, commentId: string): Promise<void> {
@@ -16,11 +16,11 @@ export class CommentDeleteService {
             throw new ConflictException()
         }
 
-        const commentExist = await this.CommentRepository.exist(commentId)
+        const commentExist = await this.commentRepository.exist(commentId)
         if (!commentExist) {
             throw new ConflictException()
         }
 
-        await this.CommentRepository.delete(commentId, userId)
+        await this.commentRepository.delete(commentId, userId)
     }
 }
