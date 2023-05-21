@@ -11,7 +11,7 @@ export class CommentFindByWorkoutService {
     constructor(
         private readonly workoutsRepository: WorkoutsRepository,
         private readonly usersRepository: UsersRepository,
-        private readonly CommentRepository: CommentsRepository,
+        private readonly commentRepository: CommentsRepository,
     ) {}
 
     async execute(user: UserPayload, idWorkout: string): Promise<CommentWithUser[]> {
@@ -25,6 +25,6 @@ export class CommentFindByWorkoutService {
             throw new ConflictException()
         }
 
-        return await this.CommentRepository.findByWorkoutWithAuthor(idWorkout)
+        return await this.commentRepository.findByWorkoutWithAuthor(idWorkout)
     }
 }

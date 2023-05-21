@@ -1,26 +1,29 @@
-import { Body, Controller, Post, Req } from '@nestjs/common'
+import { Body, Controller, HttpCode, Param, Patch, Req } from '@nestjs/common'
 import { ApiTags } from '@nestjs/swagger'
 import { UserModel } from 'src/Contexts/Users/shared/user.model'
 import { UserRole } from 'src/Contexts/Users/shared/userRole'
 import { ReqPayload } from 'src/Core/infrastructure/@types/express'
 import { Roles } from 'src/Core/infrastructure/decorators/roles.decorator'
+import { IdDto } from 'src/Core/infrastructure/dtos/id.dto'
 
 import { CommentWithUser } from '../@types/commentWithUser'
-import { CreateCommentDto } from '../dtos/createComment.dto'
-import { CommentCreateService } from '../services/create.service'
+import { UpdateCommentDto } from '../dtos/updateComment.dto'
+import { CommentUpdateService } from '../services/update.service'
 
 @ApiTags('Comments')
 @Controller('comments')
-export class CommentCreateController {
-    constructor(private readonly commentCreateService: CommentCreateService) {}
+export class CommentUpdateController {
+    constructor(private readonly commentUpdateService: CommentUpdateService) {}
 
-    @Post()
+    @HttpCode(200)
+    @Patch(':id')
     @Roles(UserRole.ATHLETE, UserRole.COACH)
     async execute(
         @Req() req: ReqPayload,
-        @Body() body: CreateCommentDto,
+        @Param() { id }: IdDto,
+        @Body() body: UpdateCommentDto,
     ): Promise<CommentWithUser> {
-        const comment = await this.commentCreateService.execute(req.user.id, body)
+        const comment = await this.commentUpdateService.execute(req.user.id, id, body)
 
         return this.serializeComment(comment)
     }

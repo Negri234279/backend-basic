@@ -1,25 +1,24 @@
+import { ConflictException, Injectable } from '@nestjs/common'
 import { UsersRepository } from 'src/Contexts/Users/shared/database/users.repository'
 import { WorkoutsRepository } from 'src/Contexts/Workouts/database/workouts.repository'
-import { UserPayload } from 'src/Core/infrastructure/@types/userPayload'
 
-import { ConflictException, Injectable } from '@nestjs/common'
-
+import { CommentWithUser } from '../@types/commentWithUser'
 import { CommentModel } from '../comment.model'
-import { CreateCommentDto } from '../dtos/createComment.dto'
 import { CommentsRepository } from '../database/comments.repository'
+import { CreateCommentDto } from '../dtos/createComment.dto'
 
 @Injectable()
 export class CommentCreateService {
     constructor(
         private readonly usersRepository: UsersRepository,
         private readonly workoutsRepository: WorkoutsRepository,
-        private readonly CommentRepository: CommentsRepository,
+        private readonly commentRepository: CommentsRepository,
     ) {}
 
-    async execute(user: UserPayload, createDto: CreateCommentDto): Promise<void> {
+    async execute(userId: string, createDto: CreateCommentDto): Promise<CommentWithUser> {
         const { id, workout } = createDto
 
-        const userExist = await this.usersRepository.exist(user.id)
+        const userExist = await this.usersRepository.exist(userId)
         if (!userExist) {
             throw new ConflictException()
         }
@@ -29,7 +28,7 @@ export class CommentCreateService {
             throw new ConflictException()
         }
 
-        const commentExist = await this.CommentRepository.exist(id)
+        const commentExist = await this.commentRepository.exist(id)
         if (commentExist) {
             throw new ConflictException()
         }
@@ -38,11 +37,13 @@ export class CommentCreateService {
 
         const newComment = new CommentModel({
             ...createDto,
-            author: user.id,
+            author: userId,
             createdAt: newDate,
             updatedAt: newDate,
         })
 
-        await this.CommentRepository.save(newComment)
+        await this.commentRepository.save(newComment)
+
+        return await this.commentRepository.findOneWithAuthor(id)
     }
 }
