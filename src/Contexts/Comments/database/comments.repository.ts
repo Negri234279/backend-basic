@@ -34,6 +34,15 @@ export class CommentsRepository implements CommentRepository {
         return commentEntities.map((commentEntity) => this.toDomain(commentEntity))
     }
 
+    async findOneWithAuthor(id: string): Promise<CommentWithUser | null> {
+        const commentEntity = await this.collection.findById(id).populate('author').lean().exec()
+        if (!commentEntity) {
+            return null
+        }
+
+        return this.toDomain(commentEntity)
+    }
+
     async findByWorkoutWithAuthor(workout: string): Promise<CommentWithUser[]> {
         const commentEntities = await this.collection
             .find({ workout })
@@ -44,6 +53,10 @@ export class CommentsRepository implements CommentRepository {
         return commentEntities.map(
             (commentEntity) => this.toDomain(commentEntity) as CommentWithUser,
         )
+    }
+
+    async delete(id: string, author: string): Promise<void> {
+        await this.collection.deleteOne({ _id: id, author }).exec()
     }
 
     async save(comment: CommentModel): Promise<void> {

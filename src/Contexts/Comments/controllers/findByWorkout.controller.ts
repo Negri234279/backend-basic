@@ -10,11 +10,11 @@ import { CommentFindByWorkoutService } from '../services/findByWorkout.service'
 import { UserModel } from 'src/Contexts/Users/shared/user.model'
 
 @ApiTags('Comments')
-@Controller('comments')
+@Controller()
 export class CommentFindByWorkoutController {
     constructor(private readonly commentFindByWorkoutService: CommentFindByWorkoutService) {}
 
-    @Get(':id')
+    @Get(':id/comments')
     @Roles(UserRole.ATHLETE, UserRole.COACH)
     async execute(@Req() req: ReqPayload, @Param() { id }: IdDto): Promise<CommentWithUser[]> {
         const comments = await this.commentFindByWorkoutService.execute(req.user, id)
