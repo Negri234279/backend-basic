@@ -55,15 +55,23 @@ export class CommentsRepository implements CommentRepository {
         )
     }
 
-    async delete(id: string, author: string): Promise<void> {
-        await this.collection.deleteOne({ _id: id, author }).exec()
-    }
-
     async save(comment: CommentModel): Promise<void> {
         const newComment = this.toPersistance(comment)
         const createdComment = new this.collection(newComment)
 
         await createdComment.save()
+    }
+
+    async update(comment: CommentModel): Promise<void> {
+        comment.updatedAt = new Date()
+
+        const { _id, ...rest } = this.toPersistance(comment)
+
+        await this.collection.updateOne({ _id }, rest).exec()
+    }
+
+    async delete(id: string, author: string): Promise<void> {
+        await this.collection.deleteOne({ _id: id, author }).exec()
     }
 
     private toPersistance(commentModel: CommentModel): CommentEntity {
