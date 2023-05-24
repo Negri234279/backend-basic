@@ -8,7 +8,7 @@ import { ProfileUpdateDto } from '../dtos/updateProfile.dto'
 export class UpdateUserProfileService {
     constructor(private readonly usersRepository: UsersRepository) {}
 
-    async execute(id: string, profileDto: ProfileUpdateDto): Promise<void> {
+    async execute(id: string, profileDto: ProfileUpdateDto): Promise<UserModel> {
         const user = await this.usersRepository.findOne(id)
         if (!user) {
             throw new ConflictException()
@@ -17,5 +17,7 @@ export class UpdateUserProfileService {
         const updateUser = new UserModel({ ...user, ...profileDto })
 
         await this.usersRepository.update(updateUser)
+
+        return updateUser
     }
 }
