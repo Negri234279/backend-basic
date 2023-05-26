@@ -1,3 +1,4 @@
-import { UserProfileController } from './profile.controller'
+import { UserProfileController } from './getProfile.controller'
+import { UserProfileUpdateController } from './updateProfile.controller'
 
-export const UserProfileControllers = [UserProfileController]
+export const UserProfileControllers = [UserProfileController, UserProfileUpdateController]
