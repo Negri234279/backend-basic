@@ -1,4 +1,4 @@
-import { Controller, Delete, Param, Req } from '@nestjs/common'
+import { Controller, Delete, HttpCode, Param, Req } from '@nestjs/common'
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger'
 import { ReqPayload } from 'src/Core/infrastructure/@types/express'
 import { Roles } from 'src/Core/infrastructure/decorators/roles.decorator'
@@ -13,6 +13,7 @@ export class UserCoachRejectAthleteController {
     constructor(private readonly rejectAthleteService: UserCoachRejectAthleteService) {}
 
     @ApiBearerAuth()
+    @HttpCode(204)
     @Delete(':id/reject-athlete')
     @Roles(UserRole.COACH)
     async execute(@Req() req: ReqPayload, @Param() { id }: IdDto): Promise<void> {
