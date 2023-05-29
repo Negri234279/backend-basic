@@ -2,15 +2,16 @@ import { ConflictException, Injectable } from '@nestjs/common'
 import { UsersRepository } from 'src/Contexts/Users/shared/database/users.repository'
 import { PaginationService } from 'src/Core/application/services/pagination.service'
 import { PaginationRes } from 'src/Core/infrastructure/@types/pagination'
+import { UserPayload } from 'src/Core/infrastructure/@types/userPayload'
 
-import { WorkoutsRepository } from '../database/workouts.repository'
+import { WorkoutsRepository } from '../../shared/database/workouts.repository'
 import { WorkoutFilters } from '../dtos/workoutsFilters.dto'
-import { WorkoutModel } from '../workout.model'
+import { WorkoutModel } from '../../shared/workout.model'
 import { FilterWorkoutsService } from './filterWorkouts.service'
 import { SortWorkoutsService } from './sortWorkout.service'
 
 @Injectable()
-export class WorkoutFindByCoachAthleteService {
+export class WorkoutFindByAthleteService {
     constructor(
         private readonly workoutsRepository: WorkoutsRepository,
         private readonly usersRepository: UsersRepository,
@@ -19,15 +20,18 @@ export class WorkoutFindByCoachAthleteService {
         private readonly paginationService: PaginationService,
     ) {}
 
-    async execute(userId: string, filters: WorkoutFilters): Promise<PaginationRes<WorkoutModel>> {
+    async execute(
+        user: UserPayload,
+        filters: WorkoutFilters,
+    ): Promise<PaginationRes<WorkoutModel>> {
         const { filterBy, sortBy, ...pagination } = filters
 
-        const user = await this.usersRepository.findOne(userId)
-        if (!user) {
+        const userExist = await this.usersRepository.exist(user.id)
+        if (!userExist) {
             throw new ConflictException()
         }
 
-        const workouts = await this.workoutsRepository.findByAthelte(userId, user.coach)
+        const workouts = await this.workoutsRepository.findByAthelte(user.id)
 
         const workoutsFiltered = this.filterWorkoutsService.execute(workouts, filterBy)
         const workoutsSorted = this.sortWorkoutsService.execute(workoutsFiltered, sortBy)

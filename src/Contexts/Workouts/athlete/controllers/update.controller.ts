@@ -9,8 +9,8 @@ import { ApiTags } from '@nestjs/swagger'
 import { UpdateworkoutDto } from '../dtos/updateWorkout.dto'
 import { WorkoutUpdateService } from '../services/update.service'
 
-@ApiTags('Workouts')
-@Controller('workouts')
+@ApiTags('Workouts athlete')
+@Controller('workouts/athlete')
 export class WorkoutUpdateController {
     constructor(private readonly workoutUpdateService: WorkoutUpdateService) {}
 

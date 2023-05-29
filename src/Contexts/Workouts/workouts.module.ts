@@ -1,20 +1,19 @@
-import { RolesGuard } from 'src/Core/infrastructure/guards/roles.guard'
-
 import { Module } from '@nestjs/common'
 import { APP_GUARD } from '@nestjs/core'
+import { PaginationService } from 'src/Core/application/services/pagination.service'
+import { RolesGuard } from 'src/Core/infrastructure/guards/roles.guard'
 
 import { UsersRepository } from '../Users/shared/database/users.repository'
 import { UsersDbModule } from '../Users/shared/database/usersDb.module'
-import { WorkoutControllers } from './controllers'
-import { WorkoutsRepository } from './database/workouts.repository'
-import { WorkoutsDbModule } from './database/workoutsDb.module'
-import { WorkoutServices } from './services'
-import { PaginationService } from 'src/Core/application/services/pagination.service'
+import { WorkoutAthleteServices } from './athlete/services'
+import { WorkoutsRepository } from './shared/database/workouts.repository'
+import { WorkoutsDbModule } from './shared/database/workoutsDb.module'
+import { WorkoutControllers } from './shared/index.controller'
 
 @Module({
     imports: [WorkoutsDbModule, UsersDbModule],
     providers: [
-        ...WorkoutServices,
+        ...WorkoutAthleteServices,
         WorkoutsRepository,
         UsersRepository,
         PaginationService,

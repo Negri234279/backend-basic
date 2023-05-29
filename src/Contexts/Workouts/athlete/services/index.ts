@@ -7,7 +7,7 @@ import { WorkoutFindOneByAthleteService } from './findOneByAthlete.service'
 import { SortWorkoutsService } from './sortWorkout.service'
 import { WorkoutUpdateService } from './update.service'
 
-export const WorkoutServices = [
+export const WorkoutAthleteServices = [
     WorkoutFindByAthleteService,
     WorkoutFindByCoachAthleteService,
     WorkoutFindOneByAthleteService,

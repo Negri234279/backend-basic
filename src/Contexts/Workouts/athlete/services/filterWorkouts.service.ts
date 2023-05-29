@@ -1,4 +1,4 @@
-import { WorkoutModel } from '../workout.model'
+import { WorkoutModel } from '../../shared/workout.model'
 
 export class FilterWorkoutsService {
     public execute(workouts: WorkoutModel[], filterBy: WORKOUT_FILTERS_BY): WorkoutModel[] {

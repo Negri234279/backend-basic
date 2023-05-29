@@ -7,10 +7,10 @@ import { Roles } from 'src/Core/infrastructure/decorators/roles.decorator'
 
 import { WorkoutFilters } from '../dtos/workoutsFilters.dto'
 import { WorkoutFindByAthleteService } from '../services/findByAthlete.service'
-import { WorkoutModel } from '../workout.model'
+import { WorkoutModel } from '../../shared/workout.model'
 
-@ApiTags('Workouts')
-@Controller('workouts')
+@ApiTags('Workouts athlete')
+@Controller('workouts/athlete')
 export class WorkoutFindByAthleteController {
     constructor(private readonly workoutFindByAthleteService: WorkoutFindByAthleteService) {}
 

@@ -1,6 +1,6 @@
 import { ConflictException, Injectable } from '@nestjs/common'
 import { UsersRepository } from 'src/Contexts/Users/shared/database/users.repository'
-import { WorkoutsRepository } from 'src/Contexts/Workouts/database/workouts.repository'
+import { WorkoutsRepository } from 'src/Contexts/Workouts/shared/database/workouts.repository'
 import { UserPayload } from 'src/Core/infrastructure/@types/userPayload'
 
 import { CommentWithUser } from '../@types/commentWithUser'

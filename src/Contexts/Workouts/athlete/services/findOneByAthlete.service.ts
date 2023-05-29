@@ -1,37 +1,29 @@
 import { UsersRepository } from 'src/Contexts/Users/shared/database/users.repository'
 import { UserPayload } from 'src/Core/infrastructure/@types/userPayload'
 
-import {
-    ConflictException,
-    ForbiddenException,
-    Injectable,
-    NotFoundException,
-} from '@nestjs/common'
+import { ConflictException, Injectable, NotFoundException } from '@nestjs/common'
 
-import { WorkoutsRepository } from '../database/workouts.repository'
+import { WorkoutsRepository } from '../../shared/database/workouts.repository'
+import { WorkoutModel } from '../../shared/workout.model'
 
 @Injectable()
-export class WorkoutDeleteService {
+export class WorkoutFindOneByAthleteService {
     constructor(
         private readonly workoutsRepository: WorkoutsRepository,
         private readonly usersRepository: UsersRepository,
     ) {}
 
-    async execute(user: UserPayload, id: string): Promise<void> {
+    async execute(user: UserPayload, id: string): Promise<WorkoutModel> {
         const userExist = await this.usersRepository.exist(user.id)
         if (!userExist) {
             throw new ConflictException()
         }
 
-        const workoutExist = await this.workoutsRepository.findOne(id)
-        if (!workoutExist) {
+        const workout = await this.workoutsRepository.findOneByAthelte(user.id, id)
+        if (!workout) {
             throw new NotFoundException()
         }
 
-        if (workoutExist.coach) {
-            throw new ForbiddenException()
-        }
-
-        await this.workoutsRepository.delete(id)
+        return workout
     }
 }

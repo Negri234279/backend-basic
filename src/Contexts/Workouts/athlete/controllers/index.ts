@@ -5,7 +5,7 @@ import { WorkoutFindByCoachAthleteController } from './findByCoachAthlete.contro
 import { WorkoutFindOneByAthleteController } from './findOneByAthlete.controller'
 import { WorkoutUpdateController } from './update.controller'
 
-export const WorkoutControllers = [
+export const WorkoutAthleteControllers = [
     WorkoutFindByAthleteController,
     WorkoutFindByCoachAthleteController,
     WorkoutFindOneByAthleteController,

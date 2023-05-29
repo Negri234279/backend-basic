@@ -6,11 +6,11 @@ import { PaginationRes } from 'src/Core/infrastructure/@types/pagination'
 import { Roles } from 'src/Core/infrastructure/decorators/roles.decorator'
 
 import { WorkoutFilters } from '../dtos/workoutsFilters.dto'
-import { WorkoutModel } from '../workout.model'
+import { WorkoutModel } from '../../shared/workout.model'
 import { WorkoutFindByCoachAthleteService } from '../services/findByCoachAthlete.service'
 
-@ApiTags('Workouts')
-@Controller('workouts')
+@ApiTags('Workouts athlete')
+@Controller('workouts/athlete')
 export class WorkoutFindByCoachAthleteController {
     constructor(
         private readonly workoutFindByCoachAthleteService: WorkoutFindByCoachAthleteService,

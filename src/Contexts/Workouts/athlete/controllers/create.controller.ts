@@ -8,8 +8,8 @@ import { ApiTags } from '@nestjs/swagger'
 import { CreateWorkoutDto } from '../dtos/createWorkout.dto'
 import { WorkoutCreateService } from '../services/create.service'
 
-@ApiTags('Workouts')
-@Controller('workouts')
+@ApiTags('Workouts athlete')
+@Controller('workouts/athlete')
 export class WorkoutCreateController {
     constructor(private readonly workoutCreateService: WorkoutCreateService) {}
 
