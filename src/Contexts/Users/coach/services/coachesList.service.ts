@@ -26,6 +26,6 @@ export class UserCoachesListService {
 
         const coaches = await this.usersRepository.find('role', UserRole.COACH)
 
-        return this.paginationService.execute<UserModel>(coaches, pagination, coaches.length)
+        return this.paginationService.execute<UserModel>(coaches, pagination)
     }
 }

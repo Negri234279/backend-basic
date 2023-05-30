@@ -3,9 +3,9 @@ import { UserPayload } from 'src/Core/infrastructure/@types/userPayload'
 
 import { ConflictException, Injectable, NotFoundException } from '@nestjs/common'
 
-import { WorkoutsRepository } from '../database/workouts.repository'
+import { WorkoutsRepository } from '../../shared/database/workouts.repository'
 import { UpdateworkoutDto } from '../dtos/updateWorkout.dto'
-import { WorkoutModel } from '../workout.model'
+import { WorkoutModel } from '../../shared/workout.model'
 
 @Injectable()
 export class WorkoutUpdateService {

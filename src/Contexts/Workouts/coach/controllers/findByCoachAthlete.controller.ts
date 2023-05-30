@@ -1,27 +1,29 @@
-import { Controller, Get, Query, Req } from '@nestjs/common'
+import { Controller, Get, Query, Req, Param } from '@nestjs/common'
 import { ApiTags } from '@nestjs/swagger'
 import { UserRole } from 'src/Contexts/Users/shared/userRole'
 import { ReqPayload } from 'src/Core/infrastructure/@types/express'
 import { PaginationRes } from 'src/Core/infrastructure/@types/pagination'
 import { Roles } from 'src/Core/infrastructure/decorators/roles.decorator'
 
-import { WorkoutFilters } from '../dtos/workoutsFilters.dto'
-import { WorkoutModel } from '../workout.model'
+import { WorkoutModel } from '../../shared/workout.model'
 import { WorkoutFindByCoachAthleteService } from '../services/findByCoachAthlete.service'
+import { WorkoutFiltersWithPaginationDto } from '../../shared/dtos/workoutFiltersWithPagination.dto'
+import { IdDto } from 'src/Core/infrastructure/dtos/id.dto'
 
-@ApiTags('Workouts')
-@Controller('workouts')
+@ApiTags('Workouts coach')
+@Controller('workouts/coach')
 export class WorkoutFindByCoachAthleteController {
     constructor(
         private readonly workoutFindByCoachAthleteService: WorkoutFindByCoachAthleteService,
     ) {}
 
-    @Get('coach')
+    @Get('/:id/athlete')
     @Roles(UserRole.ATHLETE)
     async execute(
         @Req() req: ReqPayload,
-        @Query() filters: WorkoutFilters,
+        @Param() { id }: IdDto,
+        @Query() filters: WorkoutFiltersWithPaginationDto,
     ): Promise<PaginationRes<WorkoutModel>> {
-        return await this.workoutFindByCoachAthleteService.execute(req.user.id, filters)
+        return await this.workoutFindByCoachAthleteService.execute(id, req.user.id, filters)
     }
 }

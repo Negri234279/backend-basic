@@ -1,9 +1,9 @@
 import { ConflictException, Injectable } from '@nestjs/common'
 import { UsersRepository } from 'src/Contexts/Users/shared/database/users.repository'
 
-import { WorkoutsRepository } from '../database/workouts.repository'
+import { WorkoutsRepository } from '../../shared/database/workouts.repository'
 import { CreateWorkoutDto } from '../dtos/createWorkout.dto'
-import { WorkoutModel } from '../workout.model'
+import { WorkoutModel } from '../../shared/workout.model'
 
 @Injectable()
 export class WorkoutCreateService {

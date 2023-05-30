@@ -4,8 +4,8 @@ import { InjectModel } from '@nestjs/mongoose'
 import { Model } from 'mongoose'
 import { Seeder } from 'nestjs-seeder'
 import { athlete, coach } from 'src/Contexts/Users/shared/database/users.seeder'
-import { WorkoutsRepository } from 'src/Contexts/Workouts/database/workouts.repository'
-import { workout as workoutId } from 'src/Contexts/Workouts/database/workouts.seeder'
+import { WorkoutsRepository } from 'src/Contexts/Workouts/shared/database/workouts.repository'
+import { workout as workoutId } from 'src/Contexts/Workouts/shared/database/workouts.seeder'
 import { v4 as uuidv4 } from 'uuid'
 
 import { Comment } from '../@types/comment'
@@ -25,7 +25,7 @@ export class CommentSeeder implements Seeder {
         const athleteId = athlete.id
         const coachId = coach.id
 
-        const workouts = await this.workoutsRepository.findByAthelte(athleteId)
+        const workouts = await this.workoutsRepository.find(athleteId)
 
         for (const { id: workoutId } of workouts) {
             const numComments = faker.datatype.number({ min: 1, max: 3 })
