@@ -7,10 +7,9 @@ export class PaginationService {
     async execute<TModel>(
         items: TModel[],
         pagination: PaginationDto,
-        total: number,
     ): Promise<PaginationRes<TModel>> {
-        const data = this.paginate<TModel>(items, pagination)
-        const count = total
+        const data = this.paginate<TModel>([...items], pagination)
+        const count = items.length
 
         return {
             data,

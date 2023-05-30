@@ -2,10 +2,10 @@ import { Injectable } from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
 import { FilterQuery, Model, SortOrder } from 'mongoose'
 
-import { WorkoutFilters } from '../../athlete/dtos/workoutsFilters.dto'
 import { WorkoutRepository } from '../@types/workout.repository'
 import { WorkoutModel } from '../workout.model'
 import { WorkoutEntity } from './workout.schema'
+import { WorkoutFiltersDto } from '../dtos/workoutsFilters.dto'
 
 @Injectable()
 export class WorkoutsRepository implements WorkoutRepository {
@@ -42,7 +42,11 @@ export class WorkoutsRepository implements WorkoutRepository {
         return this.toDomain(workoutEntity)
     }
 
-    async find(athlete: string, coach?: string, filters?: WorkoutFilters): Promise<WorkoutModel[]> {
+    async find(
+        athlete: string,
+        coach?: string,
+        filters?: WorkoutFiltersDto,
+    ): Promise<WorkoutModel[]> {
         const query: FilterQuery<WorkoutEntity> = {
             $and: [{ athlete }, { coach: coach ?? null }],
         }
@@ -67,17 +71,7 @@ export class WorkoutsRepository implements WorkoutRepository {
             sortQuery.date = -1
         }
 
-        const { page, limit } = filters
-
-        const skip = (page - 1) * limit
-
-        const workoutEntity = await this.collection
-            .find(query)
-            .sort(sortQuery)
-            .skip(skip)
-            .limit(limit)
-            .lean()
-            .exec()
+        const workoutEntity = await this.collection.find(query).sort(sortQuery).lean().exec()
 
         return workoutEntity.map((workout) => this.toDomain(workout))
     }

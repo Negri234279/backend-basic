@@ -21,6 +21,6 @@ export class UserCoachGetAthletesService {
 
         const athletes = coach.athletes as UserModel[]
 
-        return this.paginationService.execute<UserModel>(athletes, pagination, athletes.length)
+        return this.paginationService.execute<UserModel>(athletes, pagination)
     }
 }
