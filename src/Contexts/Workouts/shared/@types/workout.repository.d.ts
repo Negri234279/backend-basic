@@ -4,7 +4,7 @@ export interface WorkoutRepository {
     exist(id: string): Promise<boolean>
     findOne(id: string): Promise<WorkoutModel | null>
     findOneByAthelte(athlete: string, id: string): Promise<WorkoutModel | null>
-    findByAthelte(athlete: string, coach?: string): Promise<WorkoutModel[]>
+    find(athlete: string, coach?: string, filters?: WorkoutFilters): Promise<WorkoutModel[]>
 
     save(workout: WorkoutModel): Promise<void>
     update(workout: WorkoutModel): Promise<void>
