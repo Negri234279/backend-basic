@@ -5,15 +5,15 @@ import { RolesGuard } from 'src/Core/infrastructure/guards/roles.guard'
 
 import { UsersRepository } from '../Users/shared/database/users.repository'
 import { UsersDbModule } from '../Users/shared/database/usersDb.module'
-import { WorkoutAthleteServices } from './athlete/services'
 import { WorkoutsRepository } from './shared/database/workouts.repository'
 import { WorkoutsDbModule } from './shared/database/workoutsDb.module'
 import { WorkoutControllers } from './shared/index.controller'
+import { WorkoutServices } from './shared/index.service'
 
 @Module({
     imports: [WorkoutsDbModule, UsersDbModule],
     providers: [
-        ...WorkoutAthleteServices,
+        ...WorkoutServices,
         WorkoutsRepository,
         UsersRepository,
         PaginationService,
