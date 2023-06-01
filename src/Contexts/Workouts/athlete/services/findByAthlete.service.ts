@@ -5,7 +5,7 @@ import { PaginationRes } from 'src/Core/infrastructure/@types/pagination'
 
 import { WorkoutsRepository } from '../../shared/database/workouts.repository'
 import { WorkoutModel } from '../../shared/workout.model'
-import { WorkoutFiltersWithPaginationDto } from '../../shared/dtos/workoutFiltersWithPagination.dto'
+import { WorkoutAthleteFiltersWithPaginationDto } from '../dtos/workoutsAthleteFiltersWithPagination.dto'
 
 @Injectable()
 export class WorkoutFindByAthleteService {
@@ -17,14 +17,18 @@ export class WorkoutFindByAthleteService {
 
     async execute(
         athelteId: string,
-        { filters, pagination }: WorkoutFiltersWithPaginationDto,
+        { filters, pagination }: WorkoutAthleteFiltersWithPaginationDto,
     ): Promise<PaginationRes<WorkoutModel>> {
-        const userExist = await this.usersRepository.exist(athelteId)
-        if (!userExist) {
+        const athlete = await this.usersRepository.findOne(athelteId)
+        if (!athlete || !athlete.isAthlete()) {
             throw new ConflictException()
         }
 
-        const workouts = await this.workoutsRepository.find(athelteId, undefined, filters)
+        const workouts = await this.workoutsRepository.findByAthlete(
+            filters,
+            athelteId,
+            athlete?.coach,
+        )
 
         return this.paginationService.execute<WorkoutModel>(workouts, pagination)
     }

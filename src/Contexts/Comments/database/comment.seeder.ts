@@ -25,7 +25,7 @@ export class CommentSeeder implements Seeder {
         const athleteId = athlete.id
         const coachId = coach.id
 
-        const workouts = await this.workoutsRepository.find(athleteId)
+        const workouts = await this.workoutsRepository.findByAthlete(null, athleteId)
 
         for (const { id: workoutId } of workouts) {
             const numComments = faker.datatype.number({ min: 1, max: 3 })

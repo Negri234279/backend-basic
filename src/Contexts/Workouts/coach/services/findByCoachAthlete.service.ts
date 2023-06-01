@@ -30,7 +30,7 @@ export class WorkoutFindByCoachAthleteService {
             throw new ConflictException()
         }
 
-        const workouts = await this.workoutsRepository.find(athelteId, coachId, filters)
+        const workouts = await this.workoutsRepository.findByCoach(athelteId, coachId, filters)
 
         return this.paginationService.execute<WorkoutModel>(workouts, pagination)
     }
