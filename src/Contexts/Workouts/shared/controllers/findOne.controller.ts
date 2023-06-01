@@ -9,7 +9,7 @@ import { WorkoutFindOneService } from '../services/findOne.service'
 import { WorkoutModel } from '../workout.model'
 
 @ApiTags('Workouts')
-@Controller('workouts')
+@Controller('workout')
 export class WorkoutFindOneController {
     constructor(private readonly workoutFindOneService: WorkoutFindOneService) {}
 
