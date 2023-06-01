@@ -2,10 +2,12 @@ import { Injectable } from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
 import { FilterQuery, Model, SortOrder } from 'mongoose'
 
+import { WorkoutAthleteFiltersDto } from '../../athlete/dtos/workoutsAthleteFilters.dto'
 import { WorkoutRepository } from '../@types/workout.repository'
+import { WorkoutFiltersDto } from '../dtos/workoutsFilters.dto'
 import { WorkoutModel } from '../workout.model'
 import { WorkoutEntity } from './workout.schema'
-import { WorkoutFiltersDto } from '../dtos/workoutsFilters.dto'
+import { WORKOUT_SORT_BY } from '../@types/workoutSort.enum'
 
 @Injectable()
 export class WorkoutsRepository implements WorkoutRepository {
@@ -42,7 +44,43 @@ export class WorkoutsRepository implements WorkoutRepository {
         return this.toDomain(workoutEntity)
     }
 
-    async find(
+    async findByAthlete(
+        filters: WorkoutAthleteFiltersDto,
+        athlete: string,
+        coach?: string,
+    ): Promise<WorkoutModel[]> {
+        const query: FilterQuery<WorkoutEntity> = { athlete }
+
+        console.log(filters)
+
+        if (filters?.athlete && filters?.coach) {
+            query.$or = [{ athlete, coach }, { coach: null }]
+        } else if (filters?.coach) {
+            query.coach = coach
+        } else if (filters?.athlete) {
+            query.coach = null
+        } else {
+            return []
+        }
+
+        if (filters?.startDate) {
+            query.date = { $gte: new Date(filters.startDate) }
+        }
+
+        if (filters?.endDate) {
+            query.date.$lte = filters.endDate
+        }
+
+        const sortQuery: { [key in keyof Partial<WorkoutEntity>]: SortOrder } = {
+            date: filters?.sortBy === WORKOUT_SORT_BY.DEFAULT ? 1 : -1,
+        }
+
+        const workoutEntity = await this.collection.find(query).sort(sortQuery).lean().exec()
+
+        return workoutEntity.map((workout) => this.toDomain(workout))
+    }
+
+    async findByCoach(
         athlete: string,
         coach?: string,
         filters?: WorkoutFiltersDto,

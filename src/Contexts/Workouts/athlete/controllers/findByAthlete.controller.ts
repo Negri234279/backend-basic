@@ -5,8 +5,8 @@ import { ReqPayload } from 'src/Core/infrastructure/@types/express'
 import { PaginationRes } from 'src/Core/infrastructure/@types/pagination'
 import { Roles } from 'src/Core/infrastructure/decorators/roles.decorator'
 
-import { WorkoutFiltersWithPaginationDto } from '../../shared/dtos/workoutFiltersWithPagination.dto'
 import { WorkoutModel } from '../../shared/workout.model'
+import { WorkoutAthleteFiltersWithPaginationDto } from '../dtos/workoutsAthleteFiltersWithPagination.dto'
 import { WorkoutFindByAthleteService } from '../services/findByAthlete.service'
 
 @ApiTags('Workouts athlete')
@@ -18,7 +18,7 @@ export class WorkoutFindByAthleteController {
     @Roles(UserRole.ATHLETE)
     async execute(
         @Req() req: ReqPayload,
-        @Query() filters: WorkoutFiltersWithPaginationDto,
+        @Query() filters: WorkoutAthleteFiltersWithPaginationDto,
     ): Promise<PaginationRes<WorkoutModel>> {
         return await this.workoutFindByAthleteService.execute(req.user.id, filters)
     }
