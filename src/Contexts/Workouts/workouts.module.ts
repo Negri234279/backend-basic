@@ -7,7 +7,7 @@ import { UsersRepository } from '../Users/shared/database/users.repository'
 import { UsersDbModule } from '../Users/shared/database/usersDb.module'
 import { WorkoutsRepository } from './shared/database/workouts.repository'
 import { WorkoutsDbModule } from './shared/database/workoutsDb.module'
-import { WorkoutControllers } from './shared/index.controller'
+import { WorkoutControllers } from './shared/controllers'
 import { WorkoutServices } from './shared/index.service'
 
 @Module({
