@@ -11,7 +11,7 @@ import { UserRole } from '../../shared/userRole'
 import { UserCoachGetAthleteRequestsService } from '../services/getAthleteRequests.service'
 
 @ApiTags('Coaches')
-@Controller('coach')
+@Controller('coaches')
 export class UserCoachGetAthleteRequestsController {
     constructor(private readonly getAthleteRequestsService: UserCoachGetAthleteRequestsService) {}
 

@@ -8,7 +8,7 @@ import { UserRole } from '../../shared/userRole'
 import { UserCoachSendRequestToCoachService } from '../services/sendRequestToCoach.service'
 
 @ApiTags('Athletes')
-@Controller('athlete')
+@Controller('athletes')
 export class UserCoachSendRequestToCoachController {
     constructor(private readonly sendRequestToCoachService: UserCoachSendRequestToCoachService) {}
 
