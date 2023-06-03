@@ -42,7 +42,7 @@ export class UserModel implements User {
     }
 
     public toUserProfile(): UserProfile {
-        const { username, email, name, surname, role, createdAt, updatedAt } = this
+        const { username, email, name, surname, role, coach, createdAt, updatedAt } = this
 
         return {
             username,
@@ -50,6 +50,7 @@ export class UserModel implements User {
             name,
             surname,
             role,
+            coach: coach as string,
             createdAt,
             updatedAt,
         }
@@ -57,7 +58,7 @@ export class UserModel implements User {
 
     public toAthleteProfile(): AthleteProfile {
         const { id, name, surname, username, coach } = this
-        return { id, name, surname, username, coach }
+        return { id, name, surname, username, coach: coach as string }
     }
 
     public toCoachProfile(): CoachProfile {

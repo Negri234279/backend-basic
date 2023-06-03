@@ -14,6 +14,7 @@ export interface UserProfile {
     name: string
     surname: string
     role: UserRole[]
+    coach: null | string
     createdAt: Date
     updatedAt: Date
 }
