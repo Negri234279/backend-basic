@@ -25,8 +25,8 @@ export class UserCoachAcceptAthleteService {
             throw new ConflictException()
         }
 
-        athlete.acceptCoach(idCoach)
-        coach.acceptAthlete(idAthlete)
+        athlete.addCoach(idCoach)
+        coach.addAthlete(idAthlete)
 
         await this.usersRepository.update(athlete)
         await this.usersRepository.update(coach)

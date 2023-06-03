@@ -92,22 +92,32 @@ export class UserModel implements User {
         this.role = this.role.filter((rol) => rol !== role)
     }
 
-    public sendRequestToCoach(idAthlete: string): void {
-        const isAthleteRequested = this.athleteRequests.includes(idAthlete as UserModel & string)
-        const isAthleteAccepted = this.athletes.includes(idAthlete as UserModel & string)
+    public addCoach(idCoach: string): void {
+        if (!!this.coach) {
+            throw new ConflictException()
+        }
 
-        if (isAthleteRequested || isAthleteAccepted) {
+        this.coach = idCoach
+    }
+
+    public leaveCoach(): void {
+        if (!!this.coach) {
+            throw new ConflictException()
+        }
+
+        this.coach = null
+    }
+
+    public sendRequestToCoach(idAthlete: string): void {
+        if (this.hasAthleteRequest(idAthlete) || this.hasAthlete(idAthlete)) {
             throw new ConflictException()
         }
 
         this.athleteRequests.push(idAthlete as UserModel & string)
     }
 
-    public acceptAthlete(idAthlete: string): void {
-        const isAthleteRequested = this.athleteRequests.includes(idAthlete as UserModel & string)
-        const isAthleteAccepted = this.athletes.includes(idAthlete as UserModel & string)
-
-        if (!isAthleteRequested || isAthleteAccepted) {
+    public addAthlete(idAthlete: string): void {
+        if (!this.hasAthleteRequest(idAthlete) || this.hasAthlete(idAthlete)) {
             throw new ConflictException()
         }
 
@@ -117,26 +127,22 @@ export class UserModel implements User {
         this.athleteRequests = athleteRequests.filter((id) => id !== idAthlete)
     }
 
-    public acceptCoach(idCoach: string): void {
-        const hasCoach = !!this.coach
-
-        if (hasCoach) {
-            throw new ConflictException()
-        }
-
-        this.coach = idCoach
-    }
-
     public rejectAthlete(idAthlete: string): void {
-        const isAthleteRequested = this.athleteRequests.includes(idAthlete as UserModel & string)
-        const isAthleteAccepted = this.athletes.includes(idAthlete as UserModel & string)
-
-        if (!isAthleteRequested || isAthleteAccepted) {
+        if (!this.hasAthleteRequest(idAthlete) || this.hasAthlete(idAthlete)) {
             throw new ConflictException()
         }
 
         const athleteRequests = this.athleteRequests as string[]
         this.athleteRequests = athleteRequests.filter((id) => id !== idAthlete)
+    }
+
+    public leaveAthlete(idAthlete: string): void {
+        if (this.hasAthleteRequest(idAthlete) || !this.hasAthlete(idAthlete)) {
+            throw new ConflictException()
+        }
+
+        const athletes = this.athletes as string[]
+        this.athletes = athletes.filter((id) => id !== idAthlete)
     }
 
     public static async hashPassword(password: string): Promise<string> {
@@ -217,5 +223,13 @@ export class UserModel implements User {
         userEntity.updatedAt = this.updatedAt
 
         return userEntity
+    }
+
+    private hasAthlete(idAthlete: string): boolean {
+        return this.athletes.includes(idAthlete as UserModel & string)
+    }
+
+    private hasAthleteRequest(idAthlete: string): boolean {
+        return this.athleteRequests.includes(idAthlete as UserModel & string)
     }
 }
