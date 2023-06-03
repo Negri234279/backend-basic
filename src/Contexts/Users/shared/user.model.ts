@@ -14,7 +14,7 @@ export class UserModel implements User {
     public name: string
     public surname: string
     public role: UserRole[]
-    public coach?: string
+    public coach: null | string | UserModel
     public athletes?: string[] | UserModel[]
     public athleteRequests?: string[] | UserModel[]
     public createdAt: Date
@@ -56,8 +56,8 @@ export class UserModel implements User {
     }
 
     public toAthleteProfile(): AthleteProfile {
-        const { id, name, surname, username } = this
-        return { id, name, surname, username }
+        const { id, name, surname, username, coach } = this
+        return { id, name, surname, username, coach }
     }
 
     public toCoachProfile(): CoachProfile {
@@ -116,6 +116,16 @@ export class UserModel implements User {
         this.athleteRequests = athleteRequests.filter((id) => id !== idAthlete)
     }
 
+    public acceptCoach(idCoach: string): void {
+        const hasCoach = !!this.coach
+
+        if (hasCoach) {
+            throw new ConflictException()
+        }
+
+        this.coach = idCoach
+    }
+
     public rejectAthlete(idAthlete: string): void {
         const isAthleteRequested = this.athleteRequests.includes(idAthlete as UserModel & string)
         const isAthleteAccepted = this.athletes.includes(idAthlete as UserModel & string)
@@ -152,7 +162,10 @@ export class UserModel implements User {
     }
 
     public static toDomain(userEntity: UserEntity): UserModel {
-        const { _id, athletes, athleteRequests, ...restUserModel } = userEntity
+        const { _id, coach, athletes, athleteRequests, ...restUserModel } = userEntity
+
+        const coachDTO: UserModel | string | null =
+            coach === null || typeof coach === 'string' ? coach : UserModel.toDomain(coach)
 
         const athletesDTO: (UserModel | string)[] = athletes.map((athlete) => {
             if (typeof athlete === 'string') {
@@ -171,25 +184,22 @@ export class UserModel implements User {
         return new UserModel({
             id: _id,
             ...restUserModel,
+            coach: coachDTO,
             athletes: athletesDTO,
             athleteRequests: athleteRequestsDTO,
         })
     }
 
     public toPersistence(): UserEntity {
-        const athletesDTO: string[] = this.athletes?.map((athlete) => {
-            if (typeof athlete === 'string') {
-                return athlete
-            }
-            return athlete.id
-        })
+        const coachDTO: null | string = this.coach instanceof UserModel ? this.coach.id : this.coach
 
-        const athleteRequestsDTO: string[] = this.athleteRequests?.map((athleteRequest) => {
-            if (typeof athleteRequest === 'string') {
-                return athleteRequest
-            }
-            return athleteRequest.id
-        })
+        const athletesDTO: string[] = this.athletes?.map((athlete) =>
+            typeof athlete === 'string' ? athlete : athlete.id,
+        )
+
+        const athleteRequestsDTO: string[] = this.athleteRequests?.map((athleteRequest) =>
+            typeof athleteRequest === 'string' ? athleteRequest : athleteRequest.id,
+        )
 
         const userEntity = new UserEntity()
         userEntity._id = this.id
@@ -199,7 +209,7 @@ export class UserModel implements User {
         userEntity.name = this.name
         userEntity.surname = this.surname
         userEntity.role = this.role
-        userEntity.coach = this.coach
+        userEntity.coach = coachDTO
         userEntity.athletes = athletesDTO
         userEntity.athleteRequests = athleteRequestsDTO
         userEntity.createdAt = this.createdAt

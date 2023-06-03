@@ -27,7 +27,7 @@ export class WorkoutFindByAthleteService {
         const workouts = await this.workoutsRepository.findByAthlete(
             filters,
             athelteId,
-            athlete?.coach,
+            athlete.coach as string,
         )
 
         return this.paginationService.execute<WorkoutModel>(workouts, pagination)

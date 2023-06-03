@@ -17,17 +17,23 @@ export class UsersRepository implements UserRepository {
 
     async findOne(
         id: string,
-        options: { populateRequestAthletes?: boolean; populateAthletes?: boolean } = {},
+        options: {
+            populateCoach?: boolean
+            populateRequestAthletes?: boolean
+            populateAthletes?: boolean
+        } = {},
     ): Promise<UserModel | null> {
-        const { populateRequestAthletes = false, populateAthletes = false } = options
-
         const query = this.collection.findById(id)
 
-        if (populateRequestAthletes) {
+        if (options?.populateCoach) {
+            query.populate('coach')
+        }
+
+        if (options?.populateRequestAthletes) {
             query.populate('athleteRequests')
         }
 
-        if (populateAthletes) {
+        if (options?.populateAthletes) {
             query.populate('athletes')
         }
 
