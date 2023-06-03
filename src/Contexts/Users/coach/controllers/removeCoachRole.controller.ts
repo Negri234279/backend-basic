@@ -1,35 +1,34 @@
+import { Controller, Patch, Req } from '@nestjs/common'
+import { ApiBearerAuth, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger'
 import { ReqPayload } from 'src/Core/infrastructure/@types/express'
 import { AccessToken } from 'src/Core/infrastructure/@types/userPayload'
 import { Roles } from 'src/Core/infrastructure/decorators/roles.decorator'
 
-import { Controller, Patch, Req } from '@nestjs/common'
-import { ApiBearerAuth, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger'
-
 import { AccessTokenDto } from '../../shared/dtos/accessTokenDto'
 import { JwtProvider } from '../../shared/providers/jwt.service'
-import { UserRemoveCoachRoleService } from '../services/removeCoachRole.service'
+import { UserRemoveRoleService } from '../../shared/services/userRemoveRole.service'
 import { UserRole } from '../../shared/userRole'
 
 @ApiTags('Coaches')
-@Controller('coach')
+@Controller('coaches')
 export class UserRemoveCoachRoleController {
     constructor(
-        private readonly userRemoveCoachRoleService: UserRemoveCoachRoleService,
+        private readonly removeRoleService: UserRemoveRoleService,
         private readonly jwtProvider: JwtProvider,
     ) {}
 
     @ApiBearerAuth()
     @ApiOperation({
-        summary: 'Become an athlete',
-        description: 'Update the users role to athlete and return a new access token.',
+        summary: 'Stop being a coach',
+        description: 'Update the user role without be a coach and return a new access token.',
     })
     @ApiOkResponse({
         type: AccessTokenDto,
     })
-    @Patch('remove-coach-role')
+    @Patch('remove-role')
     @Roles(UserRole.COACH)
     async execute(@Req() req: ReqPayload): Promise<AccessToken> {
-        const user = await this.userRemoveCoachRoleService.execute(req.user.id)
+        const user = await this.removeRoleService.execute(req.user.id, UserRole.COACH)
         const payload = user.toPayload()
 
         return await this.jwtProvider.signToken(payload)

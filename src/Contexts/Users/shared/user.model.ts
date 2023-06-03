@@ -73,12 +73,22 @@ export class UserModel implements User {
         return this.role.includes(UserRole.ATHLETE)
     }
 
-    public removeCoachRole(): void {
-        this.role = this.role.filter((rol) => rol !== UserRole.COACH)
+    public addRole(role: UserRole): void {
+        const hasRole = this.role.includes(role)
+        if (hasRole) {
+            throw new ConflictException()
+        }
+
+        this.role.push(role)
     }
 
-    public addCoachRole(): void {
-        this.role.push(UserRole.COACH)
+    public removeRole(role: UserRole): void {
+        const hasRole = this.role.includes(role)
+        if (!hasRole) {
+            throw new ConflictException()
+        }
+
+        this.role = this.role.filter((rol) => rol !== role)
     }
 
     public sendRequestToCoach(idAthlete: string): void {

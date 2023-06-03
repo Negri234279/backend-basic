@@ -1,4 +1,5 @@
 import { UserCoachAcceptAthleteController } from './acceptAthlete.controller'
+import { UserAddCoachRoleController } from './addCoachRole.controller'
 import { UserCoachesListController } from './coachesList.controller'
 import { UserCoachGetAthleteRequestsController } from './getAthleteRequests.controller'
 import { UserCoachGetAthletesController } from './getAthletes.controller'
@@ -10,6 +11,7 @@ export const UserCoachControllers = [
     UserCoachGetAthleteRequestsController,
     UserCoachGetAthletesController,
     UserCoachAcceptAthleteController,
+    UserAddCoachRoleController,
     UserRemoveCoachRoleController,
     UserCoachRejectAthleteController,
 ]
