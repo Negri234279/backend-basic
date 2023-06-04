@@ -101,7 +101,7 @@ export class UserModel implements User {
     }
 
     public leaveCoach(): void {
-        if (!!this.coach) {
+        if (!this.coach) {
             throw new ConflictException()
         }
 
