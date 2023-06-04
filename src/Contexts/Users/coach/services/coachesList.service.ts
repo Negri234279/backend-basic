@@ -1,12 +1,11 @@
 import { ConflictException, ForbiddenException, Injectable } from '@nestjs/common'
 import { PaginationService } from 'src/Core/application/services/pagination.service'
 import { PaginationRes } from 'src/Core/infrastructure/@types/pagination'
-import { PaginationDto } from 'src/Core/infrastructure/dtos/pagination.dto'
 
 import { UsersRepository } from '../../shared/database/users.repository'
+import { SearchWithPaginationDto } from '../../shared/dtos/searchWithPagination.dto'
 import { UserModel } from '../../shared/user.model'
 import { UserRole } from '../../shared/userRole'
-import { SearchWithPaginationDto } from '../../shared/dtos/searchWithPagination.dto'
 
 @Injectable()
 export class UserCoachesListService {
