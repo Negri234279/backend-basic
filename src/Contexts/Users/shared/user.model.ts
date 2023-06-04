@@ -116,6 +116,15 @@ export class UserModel implements User {
         this.athleteRequests.push(idAthlete as UserModel & string)
     }
 
+    public cancelRequestToCoach(idAthlete: string): void {
+        if (!this.hasAthleteRequest(idAthlete) || this.hasAthlete(idAthlete)) {
+            throw new ConflictException()
+        }
+
+        const athleteRequests = this.athleteRequests as string[]
+        this.athleteRequests = athleteRequests.filter((id) => id !== idAthlete)
+    }
+
     public addAthlete(idAthlete: string): void {
         if (!this.hasAthleteRequest(idAthlete) || this.hasAthlete(idAthlete)) {
             throw new ConflictException()

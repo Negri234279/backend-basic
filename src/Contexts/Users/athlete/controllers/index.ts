@@ -1,4 +1,5 @@
 import { AthleteAddRoleController } from './addAthleteRole.controller'
+import { AthleteCancelRequestToCoachController } from './cancelRequestToCoach.controller'
 import { AthleteGetCoachProfileController } from './getCoachProfile.controller'
 import { AthleteLeaveCoachController } from './leaveCoach.controller'
 import { AthleteRemoveRoleController } from './removeAthleteRole.controller'
@@ -10,4 +11,5 @@ export const UserAthleteControllers = [
     AthleteAddRoleController,
     AthleteRemoveRoleController,
     AthleteLeaveCoachController,
+    AthleteCancelRequestToCoachController,
 ]
