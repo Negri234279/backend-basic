@@ -59,11 +59,19 @@ export class UsersRepository implements UserRepository {
         return UserModel.toDomain(userEntity)
     }
 
-    async find(property: propertyUserEntity, value: any): Promise<UserModel[]> {
-        const users = await this.collection
-            .find({ [property]: value })
-            .lean()
-            .exec()
+    async find(
+        property: propertyUserEntity,
+        value: any,
+        searchTerm?: string,
+    ): Promise<UserModel[]> {
+        const query: any = { [property]: value }
+
+        if (searchTerm) {
+            const regex = new RegExp(searchTerm, 'i')
+            query.$or = [{ name: regex }, { username: regex }]
+        }
+
+        const users = await this.collection.find(query).lean().exec()
 
         return users.map((user) => UserModel.toDomain(user))
     }

@@ -3,9 +3,9 @@ import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger'
 import { ReqPayload } from 'src/Core/infrastructure/@types/express'
 import { PaginationRes } from 'src/Core/infrastructure/@types/pagination'
 import { Roles } from 'src/Core/infrastructure/decorators/roles.decorator'
-import { PaginationDto } from 'src/Core/infrastructure/dtos/pagination.dto'
 
 import { CoachProfile } from '../../shared/@types/user'
+import { SearchWithPaginationDto } from '../../shared/dtos/searchWithPagination.dto'
 import { UserModel } from '../../shared/user.model'
 import { UserRole } from '../../shared/userRole'
 import { UserCoachesListService } from '../services/coachesList.service'
@@ -25,11 +25,11 @@ export class UserCoachesListController {
     @Roles(UserRole.ATHLETE, UserRole.COACH)
     async execute(
         @Req() req: ReqPayload,
-        @Query() pagination: PaginationDto,
+        @Query() filters: SearchWithPaginationDto,
     ): Promise<PaginationRes<CoachProfile & { hasRequest: boolean }>> {
         const { data, ...restPagination } = await this.userCoachesListService.execute(
             req.user.id,
-            pagination,
+            filters,
         )
 
         const coachesProfiles = this.serializeCoaches(data, req.user.id)

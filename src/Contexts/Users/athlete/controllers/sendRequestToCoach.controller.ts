@@ -5,12 +5,12 @@ import { Roles } from 'src/Core/infrastructure/decorators/roles.decorator'
 import { IdDto } from 'src/Core/infrastructure/dtos/id.dto'
 
 import { UserRole } from '../../shared/userRole'
-import { UserCoachSendRequestToCoachService } from '../services/sendRequestToCoach.service'
+import { AthleteSendRequestToCoachService } from '../services/sendRequestToCoach.service'
 
 @ApiTags('Athletes')
 @Controller('athletes')
-export class UserCoachSendRequestToCoachController {
-    constructor(private readonly sendRequestToCoachService: UserCoachSendRequestToCoachService) {}
+export class AthleteSendRequestToCoachController {
+    constructor(private readonly sendRequestToCoachService: AthleteSendRequestToCoachService) {}
 
     @ApiBearerAuth()
     @Post(':id/send-request-to-coach')
