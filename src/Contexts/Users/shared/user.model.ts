@@ -14,7 +14,7 @@ export class UserModel implements User {
     public name: string
     public surname: string
     public role: UserRole[]
-    public coach?: string
+    public coach: null | string | UserModel
     public athletes?: string[] | UserModel[]
     public athleteRequests?: string[] | UserModel[]
     public createdAt: Date
@@ -42,7 +42,7 @@ export class UserModel implements User {
     }
 
     public toUserProfile(): UserProfile {
-        const { username, email, name, surname, role, createdAt, updatedAt } = this
+        const { username, email, name, surname, role, coach, createdAt, updatedAt } = this
 
         return {
             username,
@@ -50,14 +50,15 @@ export class UserModel implements User {
             name,
             surname,
             role,
+            coach: coach as string,
             createdAt,
             updatedAt,
         }
     }
 
     public toAthleteProfile(): AthleteProfile {
-        const { id, name, surname, username } = this
-        return { id, name, surname, username }
+        const { id, name, surname, username, coach } = this
+        return { id, name, surname, username, coach: coach as string }
     }
 
     public toCoachProfile(): CoachProfile {
@@ -73,30 +74,50 @@ export class UserModel implements User {
         return this.role.includes(UserRole.ATHLETE)
     }
 
-    public removeCoachRole(): void {
-        this.role = this.role.filter((rol) => rol !== UserRole.COACH)
+    public addRole(role: UserRole): void {
+        const hasRole = this.role.includes(role)
+        if (hasRole) {
+            throw new ConflictException()
+        }
+
+        this.role.push(role)
     }
 
-    public addCoachRole(): void {
-        this.role.push(UserRole.COACH)
+    public removeRole(role: UserRole): void {
+        const hasRole = this.role.includes(role)
+        if (!hasRole) {
+            throw new ConflictException()
+        }
+
+        this.role = this.role.filter((rol) => rol !== role)
+    }
+
+    public addCoach(idCoach: string): void {
+        if (!!this.coach) {
+            throw new ConflictException()
+        }
+
+        this.coach = idCoach
+    }
+
+    public leaveCoach(): void {
+        if (!this.coach) {
+            throw new ConflictException()
+        }
+
+        this.coach = null
     }
 
     public sendRequestToCoach(idAthlete: string): void {
-        const isAthleteRequested = this.athleteRequests.includes(idAthlete as UserModel & string)
-        const isAthleteAccepted = this.athletes.includes(idAthlete as UserModel & string)
-
-        if (isAthleteRequested || isAthleteAccepted) {
+        if (this.hasAthleteRequest(idAthlete) || this.hasAthlete(idAthlete)) {
             throw new ConflictException()
         }
 
         this.athleteRequests.push(idAthlete as UserModel & string)
     }
 
-    public acceptAthlete(idAthlete: string): void {
-        const isAthleteRequested = this.athleteRequests.includes(idAthlete as UserModel & string)
-        const isAthleteAccepted = this.athletes.includes(idAthlete as UserModel & string)
-
-        if (!isAthleteRequested || isAthleteAccepted) {
+    public addAthlete(idAthlete: string): void {
+        if (!this.hasAthleteRequest(idAthlete) || this.hasAthlete(idAthlete)) {
             throw new ConflictException()
         }
 
@@ -107,15 +128,21 @@ export class UserModel implements User {
     }
 
     public rejectAthlete(idAthlete: string): void {
-        const isAthleteRequested = this.athleteRequests.includes(idAthlete as UserModel & string)
-        const isAthleteAccepted = this.athletes.includes(idAthlete as UserModel & string)
-
-        if (!isAthleteRequested || isAthleteAccepted) {
+        if (!this.hasAthleteRequest(idAthlete) || this.hasAthlete(idAthlete)) {
             throw new ConflictException()
         }
 
         const athleteRequests = this.athleteRequests as string[]
         this.athleteRequests = athleteRequests.filter((id) => id !== idAthlete)
+    }
+
+    public leaveAthlete(idAthlete: string): void {
+        if (this.hasAthleteRequest(idAthlete) || !this.hasAthlete(idAthlete)) {
+            throw new ConflictException()
+        }
+
+        const athletes = this.athletes as string[]
+        this.athletes = athletes.filter((id) => id !== idAthlete)
     }
 
     public static async hashPassword(password: string): Promise<string> {
@@ -142,7 +169,10 @@ export class UserModel implements User {
     }
 
     public static toDomain(userEntity: UserEntity): UserModel {
-        const { _id, athletes, athleteRequests, ...restUserModel } = userEntity
+        const { _id, coach, athletes, athleteRequests, ...restUserModel } = userEntity
+
+        const coachDTO: UserModel | string | null =
+            coach === null || typeof coach === 'string' ? coach : UserModel.toDomain(coach)
 
         const athletesDTO: (UserModel | string)[] = athletes.map((athlete) => {
             if (typeof athlete === 'string') {
@@ -161,25 +191,22 @@ export class UserModel implements User {
         return new UserModel({
             id: _id,
             ...restUserModel,
+            coach: coachDTO,
             athletes: athletesDTO,
             athleteRequests: athleteRequestsDTO,
         })
     }
 
     public toPersistence(): UserEntity {
-        const athletesDTO: string[] = this.athletes?.map((athlete) => {
-            if (typeof athlete === 'string') {
-                return athlete
-            }
-            return athlete.id
-        })
+        const coachDTO: null | string = this.coach instanceof UserModel ? this.coach.id : this.coach
 
-        const athleteRequestsDTO: string[] = this.athleteRequests?.map((athleteRequest) => {
-            if (typeof athleteRequest === 'string') {
-                return athleteRequest
-            }
-            return athleteRequest.id
-        })
+        const athletesDTO: string[] = this.athletes?.map((athlete) =>
+            typeof athlete === 'string' ? athlete : athlete.id,
+        )
+
+        const athleteRequestsDTO: string[] = this.athleteRequests?.map((athleteRequest) =>
+            typeof athleteRequest === 'string' ? athleteRequest : athleteRequest.id,
+        )
 
         const userEntity = new UserEntity()
         userEntity._id = this.id
@@ -189,12 +216,20 @@ export class UserModel implements User {
         userEntity.name = this.name
         userEntity.surname = this.surname
         userEntity.role = this.role
-        userEntity.coach = this.coach
+        userEntity.coach = coachDTO
         userEntity.athletes = athletesDTO
         userEntity.athleteRequests = athleteRequestsDTO
         userEntity.createdAt = this.createdAt
         userEntity.updatedAt = this.updatedAt
 
         return userEntity
+    }
+
+    private hasAthlete(idAthlete: string): boolean {
+        return this.athletes.includes(idAthlete as UserModel & string)
+    }
+
+    private hasAthleteRequest(idAthlete: string): boolean {
+        return this.athleteRequests.includes(idAthlete as UserModel & string)
     }
 }

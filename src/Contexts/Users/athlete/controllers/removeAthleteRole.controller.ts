@@ -9,9 +9,9 @@ import { JwtProvider } from '../../shared/providers/jwt.service'
 import { UserRemoveRoleService } from '../../shared/services/userRemoveRole.service'
 import { UserRole } from '../../shared/userRole'
 
-@ApiTags('Coaches')
-@Controller('coaches')
-export class UserRemoveCoachRoleController {
+@ApiTags('Athletes')
+@Controller('athletes')
+export class AthleteRemoveRoleController {
     constructor(
         private readonly removeRoleService: UserRemoveRoleService,
         private readonly jwtProvider: JwtProvider,
@@ -19,16 +19,16 @@ export class UserRemoveCoachRoleController {
 
     @ApiBearerAuth()
     @ApiOperation({
-        summary: 'Stop being a coach',
-        description: 'Update the user role without be a coach and return a new access token.',
+        summary: 'Stop being a athlete',
+        description: 'Update the user role without be a athlete and return a new access token',
     })
     @ApiOkResponse({
         type: AccessTokenDto,
     })
     @Patch('remove-role')
-    @Roles(UserRole.COACH)
+    @Roles(UserRole.ATHLETE)
     async execute(@Req() req: ReqPayload): Promise<AccessToken> {
-        const user = await this.removeRoleService.execute(req.user.id, UserRole.COACH)
+        const user = await this.removeRoleService.execute(req.user.id, UserRole.ATHLETE)
         const payload = user.toPayload()
 
         return await this.jwtProvider.signToken(payload)

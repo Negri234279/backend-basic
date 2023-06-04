@@ -97,8 +97,8 @@ export class CommentsRepository implements CommentRepository {
             return new CommentModel({ id, author: authorDTO, ...restComment })
         }
 
-        const { _id: authorId, ...restAuthor } = author
-        authorDTO = new UserModel({ id: authorId, ...restAuthor })
+        const { _id: authorId, coach, ...restAuthor } = author
+        authorDTO = new UserModel({ id: authorId, coach, ...restAuthor })
 
         return new CommentModel({ id, author: authorDTO, ...restComment }) as CommentWithUser
     }

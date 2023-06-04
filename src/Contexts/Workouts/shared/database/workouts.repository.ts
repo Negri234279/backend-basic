@@ -51,8 +51,6 @@ export class WorkoutsRepository implements WorkoutRepository {
     ): Promise<WorkoutModel[]> {
         const query: FilterQuery<WorkoutEntity> = { athlete }
 
-        console.log(filters)
-
         if (filters?.athlete && filters?.coach) {
             query.$or = [{ athlete, coach }, { coach: null }]
         } else if (filters?.coach) {
