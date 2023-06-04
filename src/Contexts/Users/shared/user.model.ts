@@ -62,8 +62,8 @@ export class UserModel implements User {
     }
 
     public toCoachProfile(): CoachProfile {
-        const { id, name, surname, username } = this
-        return { id, name, surname, username }
+        const { id, name, surname, username, role } = this
+        return { id, name, surname, username, role }
     }
 
     public isCoach(): boolean {
@@ -114,6 +114,15 @@ export class UserModel implements User {
         }
 
         this.athleteRequests.push(idAthlete as UserModel & string)
+    }
+
+    public cancelRequestToCoach(idAthlete: string): void {
+        if (!this.hasAthleteRequest(idAthlete) || this.hasAthlete(idAthlete)) {
+            throw new ConflictException()
+        }
+
+        const athleteRequests = this.athleteRequests as string[]
+        this.athleteRequests = athleteRequests.filter((id) => id !== idAthlete)
     }
 
     public addAthlete(idAthlete: string): void {
@@ -229,7 +238,7 @@ export class UserModel implements User {
         return this.athletes.includes(idAthlete as UserModel & string)
     }
 
-    private hasAthleteRequest(idAthlete: string): boolean {
+    public hasAthleteRequest(idAthlete: string): boolean {
         return this.athleteRequests.includes(idAthlete as UserModel & string)
     }
 }
