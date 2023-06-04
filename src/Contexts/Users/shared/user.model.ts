@@ -62,8 +62,8 @@ export class UserModel implements User {
     }
 
     public toCoachProfile(): CoachProfile {
-        const { id, name, surname, username } = this
-        return { id, name, surname, username }
+        const { id, name, surname, username, role } = this
+        return { id, name, surname, username, role }
     }
 
     public isCoach(): boolean {
@@ -229,7 +229,7 @@ export class UserModel implements User {
         return this.athletes.includes(idAthlete as UserModel & string)
     }
 
-    private hasAthleteRequest(idAthlete: string): boolean {
+    public hasAthleteRequest(idAthlete: string): boolean {
         return this.athleteRequests.includes(idAthlete as UserModel & string)
     }
 }

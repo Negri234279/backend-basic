@@ -26,13 +26,26 @@ export class UserCoachesListController {
     async execute(
         @Req() req: ReqPayload,
         @Query() pagination: PaginationDto,
-    ): Promise<PaginationRes<CoachProfile>> {
-        return await this.userCoachesListService.execute(req.user.id, pagination)
+    ): Promise<PaginationRes<CoachProfile & { hasRequest: boolean }>> {
+        const { data, ...restPagination } = await this.userCoachesListService.execute(
+            req.user.id,
+            pagination,
+        )
+
+        const coachesProfiles = this.serializeCoaches(data, req.user.id)
+
+        return {
+            data: coachesProfiles,
+            ...restPagination,
+        }
     }
 
-    private serializeCoaches(user: UserModel[]): CoachProfile[] {
-        return user.map((user: UserModel): CoachProfile => {
-            return user.toCoachProfile()
+    private serializeCoaches(user: UserModel[], idAthlete: string): any[] {
+        return user.map((coach: UserModel): CoachProfile & { hasRequest: boolean } => {
+            return {
+                hasRequest: coach.hasAthleteRequest(idAthlete),
+                ...coach.toCoachProfile(),
+            }
         })
     }
 }
