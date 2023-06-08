@@ -18,7 +18,7 @@ export class WorkoutFindByCoachAthleteController {
     ) {}
 
     @Get('/:id/athlete')
-    @Roles(UserRole.ATHLETE)
+    @Roles(UserRole.COACH)
     async execute(
         @Req() req: ReqPayload,
         @Param() { id }: IdDto,
