@@ -10,6 +10,7 @@ import configuration, { EnvVar } from './infrastructure/config/configuration'
 import { JwtAuthGuard } from './infrastructure/guards/jwtAuth.guard'
 import { LoggingMiddleware } from './infrastructure/middleware/logger.middleware'
 import { MongoModule } from './infrastructure/mongodb/mongo.module'
+import { ChatModule } from 'src/Contexts/Chats/chat.module'
 
 @Module({
     imports: [
@@ -21,6 +22,7 @@ import { MongoModule } from './infrastructure/mongodb/mongo.module'
         UsersModule,
         WorkoutsModule,
         CommentsModule,
+        ChatModule,
     ],
     providers: [
         {
