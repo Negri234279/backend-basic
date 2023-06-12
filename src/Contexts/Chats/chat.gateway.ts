@@ -107,8 +107,6 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
         @ConnectedSocket() client: Socket,
         @MessageBody() data: Partial<Chat>,
     ): Promise<void> {
-        this.logger.debug(`message: ${JSON.stringify(data)}`)
-
         const room = Array.from(client.rooms.values()).find((r) => r !== client.id)
 
         const payload = client.handshake.query['user'] as any as UserPayload
