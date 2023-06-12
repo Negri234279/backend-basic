@@ -1,6 +1,8 @@
 import { ConflictException, Logger } from '@nestjs/common'
 import { JwtService } from '@nestjs/jwt'
 import {
+    ConnectedSocket,
+    MessageBody,
     OnGatewayConnection,
     OnGatewayDisconnect,
     SubscribeMessage,
@@ -15,9 +17,8 @@ import { Chat } from './chat'
 import { ChatModel } from './chat.model'
 import { ChatRepositoryImpl } from './database/chat.repository'
 
-@WebSocketGateway(3201, {
+@WebSocketGateway({
     cors: { origin: '*' },
-    namespace: 'private-chat',
 })
 export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     @WebSocketServer()
@@ -31,26 +32,24 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
         private readonly usersRepository: UsersRepository,
     ) {}
 
-    async handleConnection(socket: Socket): Promise<void> {
-        this.logger.debug(`Client connected: ${socket.id}`)
+    async handleConnection(@ConnectedSocket() client: Socket): Promise<void> {
+        this.logger.debug(`Client connected: ${client.id}`)
 
-        const token = this.extractTokenFromHeader(socket)
+        const token = this.extractTokenFromHeader(client)
         if (!token) {
             // throw new UnauthorizedException()
         }
 
-        console.log(token)
-
         try {
             const payload = await this.jwtService.verifyAsync(token)
-            socket.handshake.query['user'] = payload
+            client.handshake.query['user'] = payload
         } catch {
             // throw new UnauthorizedException()
         }
     }
 
-    async handleDisconnect(socket: Socket): Promise<void> {
-        this.logger.debug(`Client disconnected: ${socket.id}`)
+    async handleDisconnect(@ConnectedSocket() client: Socket): Promise<void> {
+        this.logger.debug(`Client disconnected: ${client.id}`)
     }
 
     @SubscribeMessage('join-athlete')
@@ -75,7 +74,10 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     }
 
     @SubscribeMessage('join-coach')
-    async handleJoinCoachRoom(client: Socket, idAthlete: string): Promise<void> {
+    async handleJoinCoachRoom(
+        @ConnectedSocket() client: Socket,
+        @MessageBody() idAthlete: string,
+    ): Promise<void> {
         const { id } = client.handshake.query['user'] as any as UserPayload
         const coach = await this.usersRepository.findOne(id)
         if (!coach) {
@@ -101,7 +103,10 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     }
 
     @SubscribeMessage('sendMessage')
-    async handleMessage(client: Socket, data: Partial<Chat>): Promise<void> {
+    async handleMessage(
+        @ConnectedSocket() client: Socket,
+        @MessageBody() data: Partial<Chat>,
+    ): Promise<void> {
         this.logger.debug(`message: ${JSON.stringify(data)}`)
 
         const room = Array.from(client.rooms.values()).find((r) => r !== client.id)
@@ -120,15 +125,6 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
         const messageSaved = await this.chatRepository.save(newMessage)
         const messageSerialized = messageSaved.toUsername()
-
-        console.log('newMessage')
-        console.log(newMessage)
-
-        console.log('messageSaved')
-        console.log(messageSaved)
-
-        console.log('messageSerialized')
-        console.log(messageSerialized)
 
         this.server.to(room).emit('newMessage', messageSerialized)
     }
