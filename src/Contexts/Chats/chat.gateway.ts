@@ -1,4 +1,4 @@
-import { ConflictException, Logger } from '@nestjs/common'
+import { ConflictException, Logger, UnauthorizedException } from '@nestjs/common'
 import { JwtService } from '@nestjs/jwt'
 import {
     ConnectedSocket,
@@ -33,19 +33,19 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     ) {}
 
     async handleConnection(@ConnectedSocket() client: Socket): Promise<void> {
-        this.logger.debug(`Client connected: ${client.id}`)
-
         const token = this.extractTokenFromHeader(client)
         if (!token) {
-            // throw new UnauthorizedException()
+            throw new UnauthorizedException()
         }
 
         try {
             const payload = await this.jwtService.verifyAsync(token)
             client.handshake.query['user'] = payload
         } catch {
-            // throw new UnauthorizedException()
+            throw new UnauthorizedException()
         }
+
+        this.logger.debug(`Client connected: ${client.id}`)
     }
 
     async handleDisconnect(@ConnectedSocket() client: Socket): Promise<void> {
