@@ -6,9 +6,7 @@ import helmet from 'helmet'
 import { AppModule } from './Core/app.module'
 
 async function bootstrap() {
-    const app = await NestFactory.create(AppModule, {
-        bufferLogs: true,
-    })
+    const app = await NestFactory.create(AppModule)
 
     app.enableCors()
     app.use(helmet())
