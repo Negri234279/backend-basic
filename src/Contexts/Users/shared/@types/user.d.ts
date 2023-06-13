@@ -13,6 +13,7 @@ export interface UserProfile {
     email: string
     name: string
     surname: string
+    avatar: string
     role: UserRole[]
     coach: null | string
     createdAt: Date

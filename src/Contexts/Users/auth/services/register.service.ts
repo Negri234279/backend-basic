@@ -34,6 +34,7 @@ export class UserRegisterService {
             ...registerDto,
             password: hashedPassword,
             role: [UserRole.ATHLETE],
+            avatar: null,
             coach: null,
             createdAt: newDate,
             updatedAt: newDate,

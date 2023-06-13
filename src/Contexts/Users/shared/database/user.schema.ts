@@ -21,6 +21,9 @@ export class UserEntity extends BaseEntity {
     @Prop({ required: true })
     surname: string
 
+    @Prop()
+    avatar: string
+
     @Prop({
         required: true,
         type: [String],
