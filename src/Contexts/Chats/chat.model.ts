@@ -1,4 +1,3 @@
-import { UserEntity } from '../Users/shared/database/user.schema'
 import { UserModel } from '../Users/shared/user.model'
 import { Chat } from './chat'
 import { ChatEntity } from './database/chat.schema'
