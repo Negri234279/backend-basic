@@ -13,6 +13,7 @@ export class UserModel implements User {
     public email: string
     public name: string
     public surname: string
+    public avatar: string
     public role: UserRole[]
     public coach: null | string | UserModel
     public athletes?: string[] | UserModel[]
@@ -28,6 +29,7 @@ export class UserModel implements User {
         this.email = props.email
         this.name = props.name
         this.surname = props.surname
+        this.avatar = props.avatar
         this.role = props.role
         this.coach = props.coach
         this.athletes = props.athletes
@@ -42,13 +44,14 @@ export class UserModel implements User {
     }
 
     public toUserProfile(): UserProfile {
-        const { username, email, name, surname, role, coach, createdAt, updatedAt } = this
+        const { username, email, name, surname, avatar, role, coach, createdAt, updatedAt } = this
 
         return {
             username,
             email,
             name,
             surname,
+            avatar,
             role,
             coach: coach as string,
             createdAt,
@@ -224,6 +227,7 @@ export class UserModel implements User {
         userEntity.email = this.email
         userEntity.name = this.name
         userEntity.surname = this.surname
+        userEntity.avatar = this.avatar
         userEntity.role = this.role
         userEntity.coach = coachDTO
         userEntity.athletes = athletesDTO
