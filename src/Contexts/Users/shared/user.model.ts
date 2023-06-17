@@ -164,7 +164,7 @@ export class UserModel implements User {
     public async validatePassword(password: string): Promise<void> {
         const isMatch = await bcrypt.compare(password, this.password)
         if (!isMatch) {
-            throw new UnauthorizedException()
+            throw new ConflictException()
         }
     }
 
