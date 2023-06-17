@@ -1,8 +1,9 @@
 import { ConflictException, Injectable } from '@nestjs/common'
+import { unlink } from 'fs/promises'
 
+import { DEFAULT_AVATAR } from '../../shared/constants/defaultAvatar'
 import { UsersRepository } from '../../shared/database/users.repository'
 import { UserModel } from '../../shared/user.model'
-import { unlink } from 'fs/promises'
 import { join } from 'path'
 
 @Injectable()
@@ -21,9 +22,13 @@ export class UploadAvatarService {
 
         await this.usersRepository.update(updateUser)
 
-        if (user.avatar !== 'default.png') {
-            const path = join('uploads', 'avatars', user.avatar)
-            await unlink(path)
+        if (user.avatar !== DEFAULT_AVATAR) {
+            try {
+                const path = join(process.cwd(), 'uploads', 'avatars', user.avatar)
+                await unlink(path)
+            } catch (error) {
+                console.error(`UploadAvatarService: ${error.message}`)
+            }
         }
 
         return updateUser

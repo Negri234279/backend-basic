@@ -1,8 +1,9 @@
 import { ConflictException, Injectable } from '@nestjs/common'
 
+import { DEFAULT_AVATAR } from '../../shared/constants/defaultAvatar'
+import { UsersRepository } from '../../shared/database/users.repository'
 import { RegisterDto } from '../../shared/dtos'
 import { UserModel } from '../../shared/user.model'
-import { UsersRepository } from '../../shared/database/users.repository'
 import { UserRole } from '../../shared/userRole'
 
 @Injectable()
@@ -34,7 +35,7 @@ export class UserRegisterService {
             ...registerDto,
             password: hashedPassword,
             role: [UserRole.ATHLETE],
-            avatar: 'default.png',
+            avatar: DEFAULT_AVATAR,
             coach: null,
             createdAt: newDate,
             updatedAt: newDate,
