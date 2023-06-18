@@ -15,17 +15,17 @@ export class UserRegisterService {
 
         const existUserById = await this.usersRepository.findOne(id)
         if (existUserById) {
-            throw new ConflictException()
+            throw new ConflictException('User already exists')
         }
 
         const existUserByEmail = await this.usersRepository.findOneBy('email', email)
         if (existUserByEmail) {
-            throw new ConflictException()
+            throw new ConflictException('Email already exists')
         }
 
         const existUserByUsername = await this.usersRepository.findOneBy('username', username)
         if (existUserByUsername) {
-            throw new ConflictException()
+            throw new ConflictException('Username already exists')
         }
 
         const hashedPassword = await UserModel.hashPassword(password)
